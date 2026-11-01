@@ -20,6 +20,7 @@ button:disabled{cursor:default;opacity:.45}
 .hero{display:flex;flex-direction:column;gap:2vh;justify-content:center;min-height:0}
 .logo{align-self:flex-start;position:relative;background:var(--lg);color:var(--lgt);font-size:3.9vh;font-weight:700;line-height:1.12;padding:1.5vh 1.8vw 1.7vh;border-radius:3.4vh;transform:rotate(-1.2deg);margin-bottom:1vh}
 .logo.s{font-size:4.2vh;margin-bottom:2vh}
+.slogan{font-size:2.6vh;font-weight:700;color:var(--lg);margin:-0.6vh 0 0 1vw}
 .sub{font-size:2.6vh;color:var(--mut);margin:0}
 .duo{display:grid;grid-template-columns:1.35fr 1fr;gap:1.4vw}
 .rules{font-size:1.8vh;line-height:1.35}.rules b{display:block;font-size:2.5vh;margin-bottom:.6vh}.rules ul{margin:0;padding-left:1.2em}.rules li{margin:.25vh 0}
@@ -1632,7 +1633,7 @@ nstr:{n:'НМТ: наголоси',i:'🎯',t:'nstr',s:'Знайди непра�
 +Аркушик|аркУшик|лАте|вишИваний|звИсока
 +фенОмен|феномЕн|сільськогосподАрський|ціннИк|ненАвисть
 +металУргія|металургІя|діалОг|руслО|мАркетинг
-+індУстрія|індустрІя|тризУб|вИпадок|партЕр
++вИпадок|випАдок|тризУб|індУстрія|партЕр
 +бюлетЕнь|бЮлетень|близькИй|помОвчати|магістЕрський
 +щЕлепа|щелЕпа|котрИй|кАмбала|горошИна
 +кропивА|кропИва|визвОльний|крицЕвий|зАпонка
@@ -1648,15 +1649,15 @@ nstr:{n:'НМТ: наголоси',i:'🎯',t:'nstr',s:'Знайди непра�
 +кіломЕтр|кілОметр|застОпорити|мАбУть|тУлуб
 +дочкА|дОчка|промІжок|крОїти|борОдавка
 +жалюзІ|жАлюзі|завчасУ|фОрзац|зАгадка
-+зАвжди|завждИ|заробІток|перЕкис|тИгровий
++тИгровий|тигрОвий|заробІток|перЕкис|зАвжди
 +добУток|дОбуток|гальмО|зобразИти|єретИк
 +дОнька|донькА|зрУчний|лЮстро|дОгмат
 +видАння|вИдання|пОмИлка|одноразОвий|дичАвіти
 +вимОга|вИмога|прИчіп|чарівнИй|зАставка
 +читАння|чИтання|вітчИм|кИшка|перелЯк
-+навчАння|нАвчання|принестИ|рИнковий|довестИ
-+завдАння|зАвдання|закінчИти|мерЕжа|вІдгомін
-+одинАдцять|одИнадцять|завезтИ|украЇнський|свЕрдло
++навчАння|навчаннЯ|принестИ|рИнковий|довестИ
++завдАння|завданнЯ|закінчИти|мерЕжа|вІдгомін
++завезтИ|завЕзти|одинАдцять|украЇнський|свЕрдло
 +чотирнАдцять|чотИрнадцять|шляхопровІд|тисОвий|пОзначка
 +сімдесЯт|сІмдесят|осетЕр|Олень|бЕшкет
 +новИй|нОвий|віднестИ|пітнИй|боЯзнь
@@ -1910,7 +1911,7 @@ const sub=g=>{const n=P[g].it.length;if(ADM){const nn=P[g].it.filter((_,j)=>P[g]
 let body=m=='1'?band+'<div class=lab>Твій клас</div>'+cls(0)+(S.cls!==''?`<span class=note>Клас «${CL[S.cls][1]}»: ${ptsOf(+S.cls).p} очок</span>`:''):m=='c'?`<span class="note cx">⚔️ <b>Подвійні очки!</b> Клас, який ПЕРШИМ обрав правильну відповідь, отримує 20 очок і ще до +10 за швидкість — і вони йдуть у таблицю. Грати «Клас на клас» кожен клас може не більше ${CDAY} разів на день.</span><div class=lab>Які класи змагаються? (${S.cs.length} з 3)</div>`+band+cls(1)+(S.cs.length?`<span class=note>Обрано: ${S.cs.map(k=>CL[k][1]+', '+CL[k][0]+' кл.').join(' · ')}.</span>`:''):`<span class=note>⚠️ Очки в цьому режимі не йдуть у таблицю класів — зате можна чесно позмагатися одне з одним! 💪 Тут лише завдання, які вже пройшли всі класи.</span>`;
 body+=gs.length?`<div class=lab>Гра</div><div class="tiles t2">${gs.map(g=>`<button class="tile t${S.game==g?' on':''}" onclick="S.game='${g}';home()"><i>${P[g].i}</i><span>${ADM&&isNewG(g)?'<b class=nwb>🆕</b> ':''}${P[g].n}<small>${sub(g)}</small></span></button>`).join('')}</div>`:m=='c'&&S.cs.length>1?'<p class=sub>У цих класів немає спільних ігор. Оберіть класи одного року або сусідніх років.</p>':'';
 const no=need();
-app.innerHTML=`<div class=home><div class=hero><div class=logo>Мова вільних і небайдужих 🫶</div><div class=duo><div class="card rules">${RULES}</div><div class="card wod" id=wod>${wodH()}</div></div><div class=card><div class=cd id=cdn>${cdt()}</div>${tbl(0)}<button class=ghost onclick="classes()">Уся таблиця</button></div></div><div class="card setup">`+
+app.innerHTML=`<div class=home><div class=hero><div class=logo>Мова вільних і небайдужих 🫶</div><div class=slogan>Зробіть свій клас чемпіоном з української!</div><div class=duo><div class="card rules">${RULES}</div><div class="card wod" id=wod>${wodH()}</div></div><div class=card><div class=cd id=cdn>${cdt()}</div>${tbl(0)}<button class=ghost onclick="classes()">Уся таблиця</button></div></div><div class="card setup">`+
 pills('Як граємо?','mode',[['🏆 За клас','1'],...(pOpen()?[['Двоє','2'],['Троє','3'],['Четверо','4']]:[]),['⚔️ Клас на клас','c']])+body+
 `<div class=gorow>${lowB()}<button class=go ${no?'disabled':''} onclick="start()">${no||'Грати'}</button></div></div></div>`+
 (ADM?`<div class=admbar>🛠 Режим учителя · перевірено ${(([d,n])=>`${Math.floor(d/n*1000)/10}% (${d} з ${n})`)(tprog())} · 🆕 — нове чи змінене <button class=ghost onclick="edl()">Мої правки (${Object.keys(js(EK)).length})</button><button class=ghost onclick="ADM=0;home()">Вийти</button></div>`:'')}
