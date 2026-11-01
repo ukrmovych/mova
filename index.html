@@ -129,6 +129,16 @@ body.lowv #lowb{display:block}body.lowv #app{padding-bottom:7.5vh}
 .slot{cursor:pointer}.nwb{background:#ffe066;color:#2b2840;border-radius:1vh;padding:0 .5vw;font-weight:700}
 .edf input,.edf textarea{font:inherit;font-size:2.4vh;padding:.8vh 1vw;border:.25vh solid #cfcdee;border-radius:1.2vh;color:#111;-webkit-user-select:text;user-select:text}
 .shake{animation:sk .35s}
+/* Анімації натискань: кнопка «вдавлюється», з пальця розходяться кільце й конфетті, щойно обрана кнопка «желейно» підстрибує */
+button{transition:scale .12s}button:not(:disabled):active{scale:.94}
+.pop{animation:jelly .6s cubic-bezier(.3,1.5,.5,1)}
+@keyframes jelly{0%{scale:1}25%{scale:1.13 .9}45%{scale:.94 1.07}65%{scale:1.04 .97}100%{scale:1}}
+.fxr,.fxd{position:fixed;pointer-events:none;z-index:20;border-radius:50%}
+.fxr{width:2vh;height:2vh;margin:-1vh 0 0 -1vh;border:.5vh solid #f15e38;animation:ring .55s ease-out forwards}
+.fxd{width:1.4vh;height:1.4vh;margin:-.7vh 0 0 -.7vh;animation:burst .7s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes ring{to{scale:7;opacity:0}}
+@keyframes burst{60%{opacity:1}to{translate:var(--dx) var(--dy);scale:.3;opacity:0}}
+@media(prefers-reduced-motion:reduce){.pop,.fxr,.fxd{animation:none!important}.fxr,.fxd{display:none}}
 img.em{width:1.15em;height:1.15em;vertical-align:-.22em;display:inline-block;object-fit:contain;pointer-events:none}
 /* ---- Тема «Бульбашки школи» (v1) */
 .v1{--pa:#ecebfb;--dot:transparent;--ln:#d9d7f3;--bw:.3vh;--sh:0 1vh 3vh rgba(60,50,150,.12);--ss:0 .5vh 1.4vh rgba(60,50,150,.1);--sel:#1c1c3a;--lg:#f15e38;--lgt:#fff;--go:#f15e38;--got:#fff}
@@ -2101,6 +2111,15 @@ while(m=EMR.exec(t)){const s=m[0];if(EMNO[s])continue;f.append(t.slice(p,m.index
 if(EMOK[s])im.src=EMOK[s];else{const c=ecands(s);im.src=EMU+c[0]+'.png';im.dataset.n=c.slice(1).join(',');im.onload=()=>emOk(im)}im.onerror=()=>emErr(im);f.append(im);p=m.index+s.length}
 if(!p)return;f.append(t.slice(p));n.replaceWith(f)}
 new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(emo))).observe(document.body,{childList:true,subtree:true});emo(document.body);
+// ===================== АНІМАЦІЇ НАТИСКАНЬ =====================
+// Конфетті малюємо поза #app, щоб перемальовування екрана їх не обривало. Панель пароля — без ефектів, щоб ніхто не підгледів цифри.
+const FXC=['#f15e38','#f6d58e','#9d9ad8','#ffb199','#22c55e'];
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(!b||b.disabled||b.closest('.kp'))return;
+const add=(c,css,ms)=>{const d=document.createElement('i');d.className=c;d.style.cssText=css;document.body.appendChild(d);setTimeout(()=>d.remove(),ms)},x=e.clientX,y=e.clientY,big=b.matches('.go');
+add('fxr',`left:${x}px;top:${y}px`,600);const n=big?14:8;for(let k=0;k<n;k++){const a=Math.PI*2*k/n+Math.random()*.6,s=(big?10:6)+Math.random()*4;add('fxd',`left:${x}px;top:${y}px;background:${FXC[k%5]};--dx:${(Math.cos(a)*s).toFixed(1)}vh;--dy:${(Math.sin(a)*s).toFixed(1)}vh`,750)}},true);
+// Після натискання екран перемальовується — знаходимо ту саму кнопку й даємо їй «желе» (варіанти відповідей не чіпаємо: у них свої анімації)
+document.addEventListener('click',e=>{const b=e.target.closest('button[onclick]');if(!b||b.matches('.opt,.lt,.slot')||b.closest('.kp'))return;const k=b.getAttribute('onclick');
+setTimeout(()=>{const n=[...document.querySelectorAll('button[onclick]')].find(x=>x.getAttribute('onclick')==k);if(n){n.classList.remove('pop');void n.offsetWidth;n.classList.add('pop')}},0)},true);
 setInterval(()=>{const c=$('cdn');if(c)c.textContent=cdt();const w=$('wod');if(w){const h=wodH();if(w.dataset.h!=h){w.dataset.h=h;w.innerHTML=h}}if($('ed'))return;if(Date.now()-last>(ADM?180000:45000)&&(app.dataset.s!='h'||$('kp')||S.low)){S.cls='';S.cs=[];if(S.low)tl();home()}},1000);
 home();
 </script></body></html>
