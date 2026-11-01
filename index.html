@@ -104,6 +104,8 @@ button:disabled{cursor:default;opacity:.45}
 .kt{margin:0;font-size:2.2vh;font-weight:700}.kt span{font-size:2.6vh;padding:0 .3vw}
 .dots{display:flex;gap:.8vh;justify-content:center;margin:1.2vh 0 .4vh}.dots i{width:1.6vh;height:1.6vh;border-radius:50%;border:.25vh solid #8f8cd6;display:block}.dots i.f{background:var(--o);border-color:var(--o)}
 .perr{min-height:2vh;font-size:1.6vh;color:#b42318}
+.kp .card{touch-action:none;cursor:grab;max-width:30vh}.kgrip{width:6vh;height:.7vh;border-radius:1vh;background:#cfcdee;margin:0 auto 1vh}
+.kp .card.wait .keys{opacity:.35}.kp .perr{max-width:24vh;margin:0 auto}
 .khint{margin:1vh auto 0;max-width:26vh;font-size:1.7vh;line-height:1.3;color:#6b6890}.khint b{color:#2b2840}
 .keys{display:grid;grid-template-columns:repeat(3,6.4vh);gap:.8vh;justify-content:center;margin-top:.6vh}
 .key{height:6vh;font-size:2.8vh;font-weight:700;border-radius:1.4vh;background:#fff;color:#2b2840;box-shadow:0 .4vh 0 #cfcdee;border:.25vh solid #cfcdee}
@@ -1851,7 +1853,7 @@ const wh=()=>{const d=new Date(),h=Math.min(20,Math.max(7,d.getHours())),day=Mat
 const wodH=()=>{const w=wh();return`<span>Слово години</span><b>${w[0]}</b><em>${w[1]}</em><small>${w[2]=='рідковживане'?'✨ рідковживане слово':'📍 '+w[2]}</small>`};
 // ===================== КЛАСИ (рік, назва, хеш пароля) =====================
 // Самих паролів у коді немає — лише хеші. Паролі — в окремому файлі в учителя.
-const CL=[[1,'Вогники','tnsfuowcn'],[1,'Зернятка','1ieio06lsan'],[1,'Серденька','1pp67f1hkro'],[2,'Дбайливі','irl0zf3h64'],[2,'Іскри','157u37u7rzg'],[2,'Промінці','1tj5ifp0x7o'],[3,'Завзяті','1vy4hg7b4eq'],[3,'Кмітливі','a045h94pd'],[4,'Блискавки','t17r4izw6u'],[4,'Винахідники','axl7lqckeo'],[4,'Відважні','2c7rw2hh4s3'],[4,'Фенікси','q3sch2sm9a'],[5,'Допитливі','1vxjht769fd'],[5,'Зірочки','282gi6t50if'],[5,'Незламні','2005sxulrm8'],[6,'Алхіміки','23i21qw940g'],[6,'Едельвейси','1zw2oteqym0'],[6,'Ентузіасти','22sk4ztulub'],[6,'Потужні','jtvmwgfxla'],[7,'Запальні','280uzmt7wj2'],[7,'Мрійники','2eskr3i9mms'],[7,'Скелелази','286ejp5c0go'],[8,'Левенята','iiaxpv1b3a'],[8,'Науковці','1rst4znvnvj'],[9,'Супергерої','vj44dtnvc1'],[10,'Агенти','fcqqwi2oty'],[11,'Оптимісти','38upv4863i']];
+const CL=[[1,'Вогники','1zw5um9u2y5'],[1,'Зернятка','1kr9wl0mfls'],[1,'Серденька','17wukncl36e'],[2,'Дбайливі','1ox0af03sls'],[2,'Іскри','zr0nf7wldu'],[2,'Промінці','g8zi7n9k87'],[3,'Завзяті','z1ihtbpj1e'],[3,'Кмітливі','ui9fo5bpng'],[4,'Блискавки','2890i82zioj'],[4,'Винахідники','shnfpp4qak'],[4,'Відважні','6rctwp0n46'],[4,'Фенікси','kpp2yfw50j'],[5,'Допитливі','1lo4vqu5d79'],[5,'Зірочки','1czpnl706uq'],[5,'Незламні','2em378cmtxw'],[6,'Алхіміки','29xe58md81w'],[6,'Едельвейси','jvpqcfrr54'],[6,'Ентузіасти','1pz4hkr0e74'],[6,'Потужні','1bz6jv6asfe'],[7,'Запальні','fhbav5x5ls'],[7,'Мрійники','1hg3v10lmj'],[7,'Скелелази','1ha5fj2u5jz'],[8,'Левенята','14rqbny1sk7'],[8,'Науковці','1hqv71lvfeo'],[9,'Супергерої','1pubplo9rg8'],[10,'Агенти','avx8eqdds'],[11,'Оптимісти','6einznnzyp']];
 const cyrb=(s,seed=0)=>{let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0,ch;i<s.length;i++){ch=s.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return(4294967296*(2097151&h2)+(h1>>>0)).toString(36)};
 const BN={1:'1–4 класи',2:'5–8 класи',3:'9–11 класи'},bd=g=>g<5?1:g<9?2:3;
 // Змагання триває до четверга, 5 листопада 2026 року, 19:00
@@ -2041,12 +2043,23 @@ app.innerHTML=`<div class=stage><div class=top><div class="logo s">Таблиц�
 function rst(){if(!ADM)return;if(confirm('Скинути таблицю класів, усі пройдені завдання й сесії на цій панелі?')&&confirm('Точно? Це не можна скасувати.')){try{[PK_,SK,SESK,CK_].forEach(k=>localStorage.removeItem(k))}catch(x){}const m=$('ed');if(m)m.remove();classes()}}
 // ---- Пароль класу: гарна цифрова панель на екрані
 // Секретний вхід учителя: на 🔒 натиснути 4 рази, пауза щонайменше 1 с, ще 3 рази → вхід без пароля в режимі учителя
-function pin(k,cb){const n=CL[k][0]<5?4:6;let v='',err='',taps=[];const m=document.createElement('div');m.id='kp';m.className='md kp';document.body.appendChild(m);
-const r=sh=>{m.innerHTML=`<div class="card${sh?' shake':''}"><p class=kt><span data-d=l>🔒</span> «${CL[k][1]}»</p><div class=dots>${[...Array(n)].map((_,j)=>`<i class="${j<v.length?'f':''}"></i>`).join('')}</div><div class=perr>${err}</div><div class=keys>${[1,2,3,4,5,6,7,8,9].map(d=>`<button class=key data-d=${d}>${d}</button>`).join('')}<button class="key k2" data-d=x>✕</button><button class=key data-d=0>0</button><button class="key k2" data-d=b>⌫</button></div><p class=khint><b>Де взяти пароль?</b> У ментора чи однокласників.<br>Використовуй пароль лише свого класу!</p></div>`};
-m.onclick=e=>{const b=e.target.closest('[data-d]');if(!b)return;const d=b.dataset.d;last=Date.now();
+// Пароль: 1–4 класи — 3 цифри, 5–11 — 4. Після 5 хибних спроб поспіль клас чекає 30 с (ub5lk: {клас: {n: хибних спроб, u: до коли чекати}}).
+// Вікно можна перетягнути за край (будь-де, крім клавіш), щоб набрати пароль у кутку; місце запам'ятовується до перезавантаження.
+const LKK='ub5lk',TRY=5,WAIT=30000;let KPOS=null;
+function pin(k,cb){const n=CL[k][0]<5?3:4;let v='',err='',taps=[],tm=0;const m=document.createElement('div');m.id='kp';m.className='md kp';document.body.appendChild(m);
+const lk=()=>js(LKK)[k]||{n:0,u:0},setLk=o=>{const a=js(LKK);a[k]=o;sj(LKK,a)},wait=()=>Math.max(0,Math.ceil((lk().u-Date.now())/1000));
+const place=()=>{if(!KPOS)return;const c=m.querySelector('.card'),x=Math.min(innerWidth-c.offsetWidth,Math.max(0,KPOS[0])),y=Math.min(innerHeight-c.offsetHeight,Math.max(0,KPOS[1]));Object.assign(c.style,{position:'fixed',left:x+'px',top:y+'px',margin:0})};
+const r=sh=>{const w=wait();m.innerHTML=`<div class="card${sh?' shake':''}${w?' wait':''}"><div class=kgrip></div><p class=kt><span data-d=l>🔒</span> «${CL[k][1]}»</p><div class=dots>${[...Array(n)].map((_,j)=>`<i class="${j<v.length?'f':''}"></i>`).join('')}</div><div class=perr>${w?`⏳ Забагато спроб. Зачекайте ${w} с`:err}</div><div class=keys>${[1,2,3,4,5,6,7,8,9].map(d=>`<button class=key data-d=${d}>${d}</button>`).join('')}<button class="key k2" data-d=x>✕</button><button class=key data-d=0>0</button><button class="key k2" data-d=b>⌫</button></div><p class=khint><b>Де взяти пароль?</b> У ментора чи однокласників.<br>Використовуй пароль лише свого класу!</p></div>`;place()};
+// Поки клас чекає — щосекунди оновлюємо відлік
+const tick=()=>{clearInterval(tm);tm=setInterval(()=>{if(!m.isConnected||!wait()){clearInterval(tm);if(m.isConnected){err='';r()}}else r()},1000)};
+m.onpointerdown=e=>{const c=e.target.closest('.card');if(!c||e.target.closest('.key'))return;const r0=c.getBoundingClientRect(),sx=e.clientX,sy=e.clientY;let mv=0;
+const mvf=ev=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(!mv&&Math.hypot(dx,dy)<8)return;mv=1;last=Date.now();KPOS=[r0.left+dx,r0.top+dy];place()};
+const up=()=>{removeEventListener('pointermove',mvf);removeEventListener('pointerup',up);if(mv){m.dataset.drag=1;setTimeout(()=>delete m.dataset.drag,50)}};addEventListener('pointermove',mvf);addEventListener('pointerup',up)};
+m.onclick=e=>{if(m.dataset.drag)return;const b=e.target.closest('[data-d]');if(!b)return;const d=b.dataset.d;last=Date.now();
 if(d=='l'){taps=taps.concat(Date.now()).slice(-7);if(taps.length==7){const g=taps.slice(1).map((t,j)=>t-taps[j]);if(g[0]<1000&&g[1]<1000&&g[2]<1000&&g[3]>=1000&&g[4]<1000&&g[5]<1000){ADM=1;m.remove();cb()}}return}
-if(d=='x'){m.remove();return}if(d=='b'){v=v.slice(0,-1);err='';return r()}if(v.length<n)v+=d;
-if(v.length==n){if(cyrb('vilni:'+k+':'+v,7)===CL[k][2]){m.remove();cb()}else{v='';err='Не той пароль. Спробуйте ще раз.';r(1)}}else r()};r()}
+if(d=='x'){clearInterval(tm);m.remove();return}if(wait())return;if(d=='b'){v=v.slice(0,-1);err='';return r()}if(v.length<n)v+=d;
+if(v.length==n){if(cyrb('vilni:'+k+':'+v,7)===CL[k][2]){setLk({n:0,u:0});clearInterval(tm);m.remove();cb()}else{const o=lk();o.n++;v='';
+if(o.n>=TRY){setLk({n:0,u:Date.now()+WAIT});err='';r(1);tick()}else{setLk(o);err=o.n==TRY-1?'Не той пароль. Увага: лишилася остання спроба — далі доведеться зачекати 30 секунд.':'Не той пароль. Спробуйте ще раз.';r(1)}}}else r()};r();if(wait())tick()}
 const pins=(l,cb)=>l.length?pin(l[0],()=>pins(l.slice(1),cb)):cb();
 // Після першого входу вчителя паролі не питаємо до перезавантаження сторінки
 function start(){if(need())return;const m=S.mode;if(ADM)go();else if(m=='1')pins([+S.cls],go);else if(m=='c')pins(S.cs.slice(),go);else go()}
