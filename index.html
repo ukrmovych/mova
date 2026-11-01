@@ -104,6 +104,7 @@ button:disabled{cursor:default;opacity:.45}
 .kt{margin:0;font-size:2.2vh;font-weight:700}.kt span{font-size:2.6vh;padding:0 .3vw}
 .dots{display:flex;gap:.8vh;justify-content:center;margin:1.2vh 0 .4vh}.dots i{width:1.6vh;height:1.6vh;border-radius:50%;border:.25vh solid #8f8cd6;display:block}.dots i.f{background:var(--o);border-color:var(--o)}
 .perr{min-height:2vh;font-size:1.6vh;color:#b42318}
+.khint{margin:1vh auto 0;max-width:26vh;font-size:1.7vh;line-height:1.3;color:#6b6890}.khint b{color:#2b2840}
 .keys{display:grid;grid-template-columns:repeat(3,6.4vh);gap:.8vh;justify-content:center;margin-top:.6vh}
 .key{height:6vh;font-size:2.8vh;font-weight:700;border-radius:1.4vh;background:#fff;color:#2b2840;box-shadow:0 .4vh 0 #cfcdee;border:.25vh solid #cfcdee}
 .key:active{transform:translateY(.3vh);box-shadow:0 .1vh 0 #cfcdee}.key.k2{font-size:2.4vh;background:#f7e6e1}
@@ -1942,10 +1943,11 @@ const RULES=`<b>Правила</b><ul>
 <li>Грати за клас — з паролем класу.</li>
 <li>Перемагає клас, у якого найбільше очок 5 листопада о 19:00.</li></ul>`;
 // ---- «Кнопки нижче»: для молодших — усі кнопки в нижній частині екрана
-// Одна кнопка (#lowb) у самому низу екрана. Для 7 класу й старших режим вимикається сам, і кнопки не видно.
+// Одна кнопка (#lowb) у самому низу екрана — завжди й для всіх. Коли обирають 7 клас чи старший, режим сам вимикається
+// (лише раз на вибір класу — далі його можна знову ввімкнути).
 const curG=()=>S.mode=='1'?(S.cls===''?0:CL[S.cls][0]):S.mode=='c'&&S.cs.length?Math.min(...S.cs.map(k=>CL[k][0])):0;
-const lowOK=()=>{const g=curG();return!g||g<7},young=()=>{const g=curG();return g>0&&g<5};
-function upLow(){const ok=lowOK();if(!ok&&S.low){S.low=false;document.body.classList.remove('low')}document.body.classList.toggle('lowv',ok);$('lowb').textContent=S.low?'☝️ Кнопки вище':'👇 Кнопки нижче'}
+const young=()=>{const g=curG();return g>0&&g<5};let LG=0;
+function upLow(){const g=curG();if(g>=7&&g!=LG&&S.low){S.low=false;document.body.classList.remove('low')}LG=g;document.body.classList.add('lowv');$('lowb').textContent=S.low?'☝️ Кнопки вище':'👇 Кнопки нижче'}
 function tl(){S.low=!S.low;document.body.classList.toggle('low',S.low);upLow()}
 // Назва-прапорець: кожна літера — окремий елемент, щоб хвиля бігла по слову
 const flagH=s=>{let n=0;return s.split(' ').map(w=>`<span class=w>${Array.from(w).map(c=>`<i style="--i:${n++}">${c}</i>`).join('')}</span>`).join(' ')};
@@ -1970,7 +1972,7 @@ function rst(){if(!ADM)return;if(confirm('Скинути таблицю клас
 // ---- Пароль класу: гарна цифрова панель на екрані
 // Секретний вхід учителя: на 🔒 натиснути 4 рази, пауза щонайменше 1 с, ще 3 рази → вхід без пароля в режимі учителя
 function pin(k,cb){const n=CL[k][0]<5?4:6;let v='',err='',taps=[];const m=document.createElement('div');m.id='kp';m.className='md kp';document.body.appendChild(m);
-const r=sh=>{m.innerHTML=`<div class="card${sh?' shake':''}"><p class=kt><span data-d=l>🔒</span> «${CL[k][1]}»</p><div class=dots>${[...Array(n)].map((_,j)=>`<i class="${j<v.length?'f':''}"></i>`).join('')}</div><div class=perr>${err}</div><div class=keys>${[1,2,3,4,5,6,7,8,9].map(d=>`<button class=key data-d=${d}>${d}</button>`).join('')}<button class="key k2" data-d=x>✕</button><button class=key data-d=0>0</button><button class="key k2" data-d=b>⌫</button></div></div>`};
+const r=sh=>{m.innerHTML=`<div class="card${sh?' shake':''}"><p class=kt><span data-d=l>🔒</span> «${CL[k][1]}»</p><div class=dots>${[...Array(n)].map((_,j)=>`<i class="${j<v.length?'f':''}"></i>`).join('')}</div><div class=perr>${err}</div><div class=keys>${[1,2,3,4,5,6,7,8,9].map(d=>`<button class=key data-d=${d}>${d}</button>`).join('')}<button class="key k2" data-d=x>✕</button><button class=key data-d=0>0</button><button class="key k2" data-d=b>⌫</button></div><p class=khint><b>Де взяти пароль?</b> У ментора чи однокласників.<br>Використовуй пароль лише свого класу!</p></div>`};
 m.onclick=e=>{const b=e.target.closest('[data-d]');if(!b)return;const d=b.dataset.d;last=Date.now();
 if(d=='l'){taps=taps.concat(Date.now()).slice(-7);if(taps.length==7){const g=taps.slice(1).map((t,j)=>t-taps[j]);if(g[0]<1000&&g[1]<1000&&g[2]<1000&&g[3]>=1000&&g[4]<1000&&g[5]<1000){ADM=1;m.remove();cb()}}return}
 if(d=='x'){m.remove();return}if(d=='b'){v=v.slice(0,-1);err='';return r()}if(v.length<n)v+=d;
