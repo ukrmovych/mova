@@ -129,6 +129,7 @@ body.lowv #lowb{display:block}body.lowv #app{padding-bottom:7.5vh}
 .slot{cursor:pointer}.nwb{background:#ffe066;color:#2b2840;border-radius:1vh;padding:0 .5vw;font-weight:700}
 .edf input,.edf textarea{font:inherit;font-size:2.4vh;padding:.8vh 1vw;border:.25vh solid #cfcdee;border-radius:1.2vh;color:#111;-webkit-user-select:text;user-select:text}
 .shake{animation:sk .35s}
+img.em{width:1.15em;height:1.15em;vertical-align:-.22em;display:inline-block;object-fit:contain;pointer-events:none}
 /* ---- Тема «Бульбашки школи» (v1) */
 .v1{--pa:#ecebfb;--dot:transparent;--ln:#d9d7f3;--bw:.3vh;--sh:0 1vh 3vh rgba(60,50,150,.12);--ss:0 .5vh 1.4vh rgba(60,50,150,.1);--sel:#1c1c3a;--lg:#f15e38;--lgt:#fff;--go:#f15e38;--got:#fff}
 .v1 .card{border-radius:3.6vh 3.6vh 3.6vh .6vh}.v1 .tile,.v1 .opt{border-radius:2.4vh 2.4vh 2.4vh .5vh}
@@ -2084,6 +2085,22 @@ const m=document.createElement('div');m.id='ed';m.className='md';m.innerHTML=`<d
 function edf(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([$('etxt').value],{type:'text/plain;charset=utf-8'}));a.download='правки-мовна-гра.txt';a.click()}
 ['pointerdown','keydown'].forEach(t=>document.addEventListener(t,()=>last=Date.now()));
 // Бездіяльність: діти — 45 с, учитель — 3 хв; редагування не перериваємо
-setInterval(()=>{const c=$('cdn');if(c)c.textContent=cdt();const w=$('wod');if(w){const h=wodH();if(w.innerHTML!=h)w.innerHTML=h}if($('ed'))return;if(Date.now()-last>(ADM?180000:45000)&&(app.dataset.s!='h'||$('kp')||S.low)){S.cls='';S.cs=[];if(S.low)tl();home()}},1000);
+// ===================== ЕМОДЗІ APPLE =====================
+// Усі емодзі на екрані замінюємо картинками в стилі iPhone (emoji-datasource-apple). Замок на панелі пароля (.kp) лишаємо як є.
+// Назви файлів то з FE0F, то без — пробуємо варіанти; вдалий запам'ятовуємо. Якщо картинки немає — лишається звичайний символ.
+const EMR=/\p{Regional_Indicator}{2}|\p{Extended_Pictographic}(?:️|\p{Emoji_Modifier})?(?:‍\p{Extended_Pictographic}(?:️|\p{Emoji_Modifier})?)*/gu;
+const EMU='https://cdn.jsdelivr.net/npm/emoji-datasource-apple@15.1.2/img/apple/64/',EMOK={},EMNO={};
+const ecode=s=>[...s].map(c=>c.codePointAt(0).toString(16)).join('-');
+const ecands=s=>{const a=ecode(s),b=ecode(s.replace(/️/g,''));return[...new Set([a,b,b.includes('-')?a:b+'-fe0f'])]};
+function emErr(im){const l=im.dataset.n?im.dataset.n.split(','):[];if(l.length){im.dataset.n=l.slice(1).join(',');im.src=EMU+l[0]+'.png'}else{EMNO[im.alt]=1;im.replaceWith(im.alt)}}
+function emOk(im){EMOK[im.alt]=im.src}
+function emo(root){if(root.nodeType==3){const p=root.parentElement;if(p&&!p.closest('.kp,textarea,script,style'))emoT(root);return}if(root.nodeType!=1||root.closest('.kp,textarea,script,style'))return;
+const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest('.kp,textarea,script,style')?2:1}),l=[];while(w.nextNode())l.push(w.currentNode);l.forEach(emoT)}
+function emoT(n){const t=n.nodeValue;EMR.lastIndex=0;if(!EMR.test(t))return;EMR.lastIndex=0;const f=document.createDocumentFragment();let p=0,m;
+while(m=EMR.exec(t)){const s=m[0];if(EMNO[s])continue;f.append(t.slice(p,m.index));const im=document.createElement('img');im.className='em';im.alt=s;im.draggable=false;
+if(EMOK[s])im.src=EMOK[s];else{const c=ecands(s);im.src=EMU+c[0]+'.png';im.dataset.n=c.slice(1).join(',');im.onload=()=>emOk(im)}im.onerror=()=>emErr(im);f.append(im);p=m.index+s.length}
+if(!p)return;f.append(t.slice(p));n.replaceWith(f)}
+new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(emo))).observe(document.body,{childList:true,subtree:true});emo(document.body);
+setInterval(()=>{const c=$('cdn');if(c)c.textContent=cdt();const w=$('wod');if(w){const h=wodH();if(w.dataset.h!=h){w.dataset.h=h;w.innerHTML=h}}if($('ed'))return;if(Date.now()-last>(ADM?180000:45000)&&(app.dataset.s!='h'||$('kp')||S.low)){S.cls='';S.cs=[];if(S.low)tl();home()}},1000);
 home();
 </script></body></html>
