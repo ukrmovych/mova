@@ -3170,7 +3170,7 @@ const ptsOf=k=>{const s=js(SK)[k]||{};let p=0;for(const g of GK(k))for(const v o
 const CX=2,CDAY=2,CK_='ub5c',today=()=>new Date().toDateString();
 const cleft=k=>{const x=js(CK_)[k];return CDAY-(x&&x.d==today()?x.n:0)};
 const cplay=ks=>{const c=js(CK_);for(const k of ks){const x=c[k]&&c[k].d==today()?c[k]:{d:today(),n:0};x.n++;c[k]=x}sj(CK_,c);qAdd({o:'c',ks:ks.slice(),d:iso(),n:1})};
-const gpts=(k,g)=>Object.values(done_(k,g)).reduce((a,b)=>a+b,0);
+const gpts=(k,g)=>Object.values(done_(k,g)).reduce((a,b)=>a+b,0),gp=gpts;
 const closed=()=>Date.now()>=END;
 // Зараховує відповідь класу k на завдання j гри g (v — бали). Кожне завдання — лише раз.
 function award(k,g,j,v){if(closed()||ADM)return;const s=js(SK),o=s[k]=s[k]||{},a=o[g]=o[g]||{};if(j in a)return;a[j]=v;sj(SK,s);const t=Date.now();if(v){const p=js(PK_),q=p[k]=p[k]||{p:0,t:0};q.p+=v;q.t=t;sj(PK_,p)}qAdd({o:'a',k,g,j,v,sid:SES&&SES.g==g?SES.id:'',t});sesAdd(k,g,j,v)}
@@ -3256,6 +3256,9 @@ if(w=='k')dl(`статистика-класи-${day}.csv`,csv([['Клас','Рі
 if(w=='j')dl(`статистика-усе-${day}.json`,JSON.stringify({експорт:new Date().toLocaleString('uk-UA'),класи:CL.map(c=>({рік:c[0],назва:c[1]})),ігри:Object.fromEntries(ALLG.map(g=>[g,P[g].n])),сесії:js(SESK),бали:js(SK)},null,1),'application/json')}
 // Нові для всіх указаних класів завдання гри
 const fresh=(ks,g)=>sh(P[g].it.map((_,j)=>j).filter(j=>ks.every(k=>!(j in done_(k,g)))));
+// Нові завдання гри (набір b…) — частина тієї самої гри: спершу йдуть старі завдання, потім нові.
+const gn=g=>ADM?P[g].n:P[g].n.replace(' — нові',''),NSx=(ks,g)=>{const a=ks.map(k=>(BK[k]||BY[CL[k][0]]||[]).find(id=>P[id].beta==g));return a[0]&&a.every(x=>x==a[0])?a[0]:null},
+fr2=(ks,g)=>{const n=NSx(ks,g);return fresh(ks,g).concat(n?fresh(ks,n):[])},act=(ks,g)=>{const n=NSx(ks,g);return fresh(ks,g).length||!n?g:n};
 // Рейтинг: більше балів — вище; за рівності вище той, хто набрав ці бали раніше
 const rank=()=>CL.map((c,k)=>{const o=ptsOf(k);return[k,o.p,o.t]}).sort((a,b)=>b[1]-a[1]||(a[1]?a[2]-b[2]:a[0]-b[0]));
 const p2=n=>String(n).padStart(2,'0');
@@ -3273,18 +3276,18 @@ const andL=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+(isV(a[a.length-2].
 // Чому в «Клас на клас» немає (чи не показано) спільних ігор
 function cmsg(){const ks=S.cs,c=commonG(ks);
 if(!c.length){const n=ks.map(clGen);return`${isV(n[0][0])?'В':'У'} ${andL(n)} немає спільних ігор: ці класи навчаються в різних роках. Оберіть класи одного року або сусідніх років.`}
-if(ADM)return'';const gone=c.filter(g=>!fresh(ks,g).length);if(!gone.length)return'';
-const who=g=>{const full=ks.filter(k=>Object.keys(done_(k,g)).length>=P[g].it.length);return full.length?andL(full.map(k=>CL[k][1])):'разом '+andL(ks.map(k=>CL[k][1]))},grp={};
+if(ADM)return'';const gone=c.filter(g=>!P[g].beta&&!fr2(ks,g).length);if(!gone.length)return'';
+const who=g=>{const full=ks.filter(k=>!fr2([k],g).length);return full.length?andL(full.map(k=>CL[k][1])):'разом '+andL(ks.map(k=>CL[k][1]))},grp={};
 for(const g of gone)(grp[who(g)]=grp[who(g)]||[]).push(g);
 const parts=Object.entries(grp).map(([w,gs])=>`${w} ${isV(w.slice(-1))?'вже':'уже'} розв’язали всі завдання в ${gs.length>1?'іграх':'грі'} ${andL(gs.map(g=>'«'+P[g].n+'»'))}`);
 const t=(gone.length==c.length?'Спільні ігри є, але нових завдань у них не лишилося: ':`Не показано ${gone.length>1?'деякі спільні ігри':'одну спільну гру'}: `)+parts.join('; ')+'.';return t[0].toUpperCase()+t.slice(1)}
-function games(){if(S.mode=='c'){if(S.cs.length<2)return[];const c=commonG(S.cs);return ADM?c:c.filter(g=>fresh(S.cs,g).length)}if(S.mode!='1')return pg();const x=S.cls===''?0:CL[S.cls][0];return x?GK(+S.cls):[]}
+function games(){if(S.mode=='c'){if(S.cs.length<2)return[];const c=commonG(S.cs);return ADM?c:c.filter(g=>!P[g].beta&&fr2(S.cs,g).length)}if(S.mode!='1')return pg();const x=S.cls===''?0:CL[S.cls][0];return x?GK(+S.cls).filter(g=>ADM||!P[g].beta):[]}
 // Режими «Двоє/Троє/Четверо» показують лише завдання, які вже пройшли ВСІ класи, що мають цю гру,
 // — щоб не розкрити нових завдань. Режими відкриваються, коли таких завдань є щонайменше по 10 у 5 іграх.
 function used(g){const ks=CL.map((c,k)=>k).filter(k=>GK(k).includes(g));return P[g].it.map((_,j)=>j).filter(j=>ks.every(k=>j in done_(k,g)))}
 const pg=()=>ALLG.filter(g=>ADM||used(g).length>=10),pOpen=()=>ADM||pg().length>=1;
 const keys=()=>S.mode=='1'?[+S.cls]:S.mode=='c'?S.cs:[];
-function need(){const m=S.mode;if(!ADM&&(m=='1'||m=='c')&&closed())return'Змагання завершено';if(m=='1'&&S.cls==='')return'Спочатку обери свій клас';if(m=='c'&&S.cs.length<2)return'Оберіть 2 або 3 класи';if(!S.game)return m=='1'?'Обери гру':'Оберіть гру';if(!ADM&&m=='c'){const k=S.cs.find(k=>!cleft(k));if(k!==undefined)return`«${CL[k][1]}» уже зіграли ${CDAY} рази сьогодні`}if(!ADM&&(m=='1'||m=='c')&&!fresh(keys(),S.game).length)return m=='1'?'Цю гру ви вже пройшли':'Спільних нових завдань немає';return''}
+function need(){const m=S.mode;if(!ADM&&(m=='1'||m=='c')&&closed())return'Змагання завершено';if(m=='1'&&S.cls==='')return'Спочатку обери свій клас';if(m=='c'&&S.cs.length<2)return'Оберіть 2 або 3 класи';if(!S.game)return m=='1'?'Обери гру':'Оберіть гру';if(!ADM&&m=='c'){const k=S.cs.find(k=>!cleft(k));if(k!==undefined)return`«${CL[k][1]}» уже зіграли ${CDAY} рази сьогодні`}if(!ADM&&(m=='1'||m=='c')&&!fr2(keys(),S.game).length)return m=='1'?'Цю гру ви вже пройшли':'Спільних нових завдань немає';return''}
 function tg(k){const a=S.cs,j=a.indexOf(k);if(j>=0)a.splice(j,1);else if(a.length<3)a.push(k);home()}
 function stop(){RUN++;clearInterval(TQ);PZ=0;SES=null;['md','kp','ed'].forEach(id=>{const m=$(id);if(m)m.remove()})}
 const RULES=`<b>Правила</b><ul>
@@ -3305,10 +3308,10 @@ const flagH=s=>{let n=0;return s.split(' ').map(w=>`<span class=w>${Array.from(w
 // Перевірка вчителем: скільки завдань класу перевірено, і загальний відсоток
 const cdone=g=>P[g].it.filter((_,j)=>isck(g,j)).length,cprog=k=>GK(k).reduce((s,g)=>s+cdone(g),0);
 const tprog=()=>{const d=ALLG.reduce((s,g)=>s+cdone(g),0),n=ALLG.reduce((s,g)=>s+P[g].it.length,0);return[d,n]};
-function home(){stop();SCR='h';if('234'.includes(S.mode)){S.np=S.mode;S.mode='f'}if(S.mode=='f'&&!pOpen())S.mode='1';app.dataset.s='h';document.body.style.setProperty('--t',-(Date.now()%1e7)+'ms');upLow();const m=S.mode,gs=games();if(!gs.includes(S.game))S.game='';
+function home(){stop();SCR='h';if('234'.includes(S.mode)){S.np=S.mode;S.mode='f'}if(S.mode=='f'&&!pOpen())S.mode='1';app.dataset.s='h';document.body.style.setProperty('--t',-(Date.now()%1e7)+'ms');upLow();const m=S.mode;if(!ADM&&S.game&&P[S.game]&&P[S.game].beta&&m!='f')S.game=P[S.game].beta;const gs=games();if(!gs.includes(S.game))S.game='';
 const band=`<div class=lab>Вікова група</div><div class=pills>${[1,2,3].map(b=>`<button class="pill${S.band==b?' on':''}" onclick="S.band=${b};home()">${BN[b]}</button>`).join('')}</div>`;
 const cls=multi=>`<div class=tiles>${CL.map((c,k)=>[c,k]).filter(([c])=>bd(c[0])==S.band).map(([c,k])=>{const on=multi?S.cs.includes(k):S.cls===''+k,cp=ADM?cprog(k):0,f=cp/MAXK(k);return`<button class="tile${on?' on':''}" onclick="${multi?`tg(${k})`:`S.cls='${k}';home()`}"${ADM&&!on?` style="background:hsl(135,${30+50*f}%,${96-36*f}%);color:#1d2b1f"`:''}>${c[1]}<small>${ADM?`${cp} з ${MAXK(k)} перевірено`:c[0]+' клас'+(multi?(cleft(k)>0?` · ⚔️ ще ${cleft(k)}`:' · ⚔️ завтра'):'')}</small></button>`}).join('')}</div>`;
-const sub=g=>{const n=P[g].it.length;if(ADM){const nn=P[g].it.filter((_,j)=>P[g].nw[j]&&!isck(g,j)).length;return`перевірено ${cdone(g)} з ${n}`+(NEWP.includes(g)?' · 🆕 нова гра':nn?` · 🆕 нових: ${nn}`:'')+(P[g].upd?` · 🆕 ${P[g].upd}`:'')}if(m!='1'&&m!='c')return`завдань: ${used(g).length}`;if(m=='1'){const d=Object.keys(done_(+S.cls,g)).length;return d>=n?`пройдено ✓ · ${gpts(+S.cls,g)} з ${n*(PT+SP)} оч.`:`${d} з ${n} завдань · ${gpts(+S.cls,g)} з ${n*(PT+SP)} оч.`}if(m=='c')return`спільних нових: ${fresh(S.cs,g).length}`;return P[g].s};
+const sub=g=>{const n=P[g].it.length;if(ADM){const nn=P[g].it.filter((_,j)=>P[g].nw[j]&&!isck(g,j)).length;return`перевірено ${cdone(g)} з ${n}`+(NEWP.includes(g)?' · 🆕 нова гра':nn?` · 🆕 нових: ${nn}`:'')+(P[g].upd?` · 🆕 ${P[g].upd}`:'')}if(m!='1'&&m!='c')return`завдань: ${used(g).length}`;if(m=='1'){const k=+S.cls,ns=NSx([k],g),n=P[g].it.length+(ns?P[ns].it.length:0),d=Object.keys(done_(k,g)).length+(ns?Object.keys(done_(k,ns)).length:0),gpts=(k,g)=>gp(k,g)+(ns?gp(k,ns):0);return d>=n?`пройдено ✓ · ${gpts(+S.cls,g)} з ${n*(PT+SP)} оч.`:`${d} з ${n} завдань · ${gpts(+S.cls,g)} з ${n*(PT+SP)} оч.`}if(m=='c')return`спільних нових: ${fr2(S.cs,g).length}`;return P[g].s};
 let body=m=='1'?band+'<div class=lab>Твій клас</div>'+cls(0)+(S.cls!==''?`<span class=note>Клас «${CL[S.cls][1]}»: ${ptsOf(+S.cls).p} очок</span>`:''):m=='c'?`<span class="note cx">⚔️ <b>Подвійні очки!</b> Клас, який ПЕРШИМ обрав правильну відповідь, отримує 20 очок і ще до +10 за швидкість — і вони йдуть у таблицю. Грати «Клас на клас» кожен клас може не більше ${CDAY} разів на день.</span><div class=lab>Які класи змагаються? (${S.cs.length} з 3)</div>`+band+cls(1)+(S.cs.length?`<span class=note>Обрано: ${S.cs.map(k=>CL[k][1]+', '+CL[k][0]+' кл.').join(' · ')}.</span>`:''):pills('Скільки гравців?','np',[['🙋 Сам(а)','1'],['👫 Удвох','2'],['Утрьох','3'],['Учотирьох','4']])+`<span class=note>🎈 Тут граємо без очок для таблиці — просто для радості${S.np=='1'?' й тренування':' й чесного змагання одне з одним'}! ${S.np=='1'?'🙂':'💪'} У цьому режимі — ігри, які вже пройшли всі класи. Щойно інші класи пройдуть свої ігри, тут з’являтимуться нові — зазирайте частіше!</span>`;
 const cm=m=='c'&&S.cs.length>1?cmsg():'';
 body+=gs.length?`<div class=lab>Гра</div><div class="tiles t2">${gs.map(g=>`<button class="tile t${S.game==g?' on':''}" onclick="S.game='${g}';home()"><i>${P[g].i}</i><span>${ADM&&isNewG(g)?'<b class=nwb>🆕</b> ':''}${P[g].n}<small>${sub(g)}</small></span></button>`).join('')}</div>${cm?`<p class=sub>${cm}</p>`:''}`:cm?`<p class=sub>${cm}</p>`:'';
@@ -3342,7 +3345,7 @@ if(v.length==n){if(cyrb('vilni:'+k+':'+v,7)===CL[k][2]){setLk({n:0,u:0});clearIn
 if(o.n>=TRY){setLk({n:0,u:Date.now()+WAIT});err='';r(1);tick()}else{setLk(o);err=o.n==TRY-1?'Не той пароль. Увага: лишилася остання спроба — далі доведеться зачекати 30 секунд.':'Не той пароль. Спробуйте ще раз.';r(1)}}}else r()};r();if(wait())tick()}
 const pins=(l,cb)=>l.length?pin(l[0],()=>pins(l.slice(1),cb)):cb();
 // Після першого входу вчителя паролі не питаємо до перезавантаження сторінки
-function start(){if(need())return;const m=S.mode;if(ADM)go();else if(m=='1')pins([+S.cls],go);else if(m=='c')pins(S.cs.slice(),go);else go()}
+function start(){if(need())return;const m=S.mode;if(!ADM&&(m=='1'||m=='c'))S.game=act(keys(),S.game);if(ADM)go();else if(m=='1')pins([+S.cls],go);else if(m=='c')pins(S.cs.slice(),go);else go()}
 function go(){stop();delete app.dataset.s;upLow();if(S.mode=='c'&&!ADM)cplay(S.cs);S.mode=='1'?solo():duel()}
 // ---- Кнопка «Завершити» з підтвердженням
 const qbtn='<button class=ghost onclick="ask()">Завершити</button>';
@@ -3387,7 +3390,7 @@ const CK='ub5chk',ckey=(g,j)=>P[g].nw[j]?j+'n'+(P[g].cv||''):j,chk=g=>js(CK)[g]|
 // ---- Гра за свій клас: до 10 нових завдань, перед стартом — відлік 5 с із правилами.
 // Режим учителя: усі завдання гри, неперевірені — спершу; без таймера й очок; після відповіді — автоматично далі.
 function solo(){K=+S.cls;i=0;sc=0;nr=0;if(ADM){const g=S.game,all=P[g].it.map((_,j)=>j),un=all.filter(j=>!isck(g,j));Q=[...sh(un.filter(j=>P[g].nw[j])),...sh(un.filter(j=>!P[g].nw[j])),...sh(all.filter(j=>isck(g,j)))];return sq()}
-Q=fresh([K],S.game).slice(0,10);sesStart([K],Q.length*(PT+SP));intro(`${P[S.game].i} ${P[S.game].n} · завдань: ${Q.length}`,sq)}
+Q=fresh([K],S.game).slice(0,10);sesStart([K],Q.length*(PT+SP));intro(`${P[S.game].i} ${gn(S.game)} · завдань: ${Q.length}`,sq)}
 function sq(){clearInterval(TQ);if(AU)AU.pause();AQ++;AH=0;if(i>=Q.length)return endSolo();sesGo();lock=0;cur=card(S.game,Q[i]);opts=cur.o||[];B=[nb()];const ck=ADM&&isck(S.game,Q[i]),nw=ADM&&P[S.game].nw[Q[i]];
 app.innerHTML=`<div class=stage><div class=top>`+(ADM?`<span class=badge>🛠 №${Q[i]+1}${nw?' · <b class=nwb>🆕 нове</b>':''}${ck?' · перевірено ✓':''}</span><span class=badge>${i+1} / ${Q.length}</span><div class=bar><i style="width:${i/Q.length*100}%"></i></div><button class=ghost onclick="if(i>0){i--;sq()}">◀ Назад</button><button class=ghost onclick="ed()">✏️ Редагувати</button><button class=ghost onclick="mchk(S.game,Q[i]);i++;sq()">Далі ▶</button>`:`<span class=badge>${i+1} / ${Q.length}</span><span class=badge id=ts>⏱</span><div class=bar><i id=tb style="width:100%;transition:none"></i></div><span class=badge>⭐ +${sc}</span>`)+`${qbtn}</div><div class="card qc"${ADM?' onclick="aq()"':''}>${qh()}</div>`+
 (cur.w?`<div class=bz id=bz>${bh(0,'sb')}</div>`:`<div class=opts style="grid-template-columns:${cols()}">${optsH('ans')}</div>`)+sndH()+`<div id=fb class=fb${ADM?' onclick="aq()"':''}></div></div>`;
@@ -3401,9 +3404,9 @@ function sb(p,k){if(lock||PZ)return;const r=bt(0,k);$('bz').innerHTML=bh(0,'sb')
 // Учитель: після відповіді — автоматично далі за 2,5 с, якщо не торкатися картки
 function anext(){mchk(S.game,Q[i]);const q=AQ;later(()=>{if(q==AQ&&!AH&&!$('ed')){i++;sq()}},2500)}
 function aq(){if(!lock)return;AH=1;ed()}
-function endSolo(){if(ADM){S.cls='';return home()}stop();const k=K,o=ptsOf(k),place=rank().findIndex(x=>x[0]==k)+1,left=fresh([k],S.game).length;
+function endSolo(){if(ADM){S.cls='';return home()}stop();const k=K,o=ptsOf(k),place=rank().findIndex(x=>x[0]==k)+1,left=fr2([k],P[S.game].beta||S.game).length;
 const kind=['Дякуємо за гру! 🫶','Мова любить сміливих!','Кожна гра — нові слова у скарбничці!'][Math.random()*3|0];
-S.cls='';app.innerHTML=`<div class=stage style="justify-content:center"><div class="card" style="text-align:center"><p class=big style="font-size:11vh">⭐ +${sc}</p><p class=sub style="color:var(--ink);font-size:3.4vh">${kind} Правильних відповідей: ${nr}</p><p class=sub style="margin:1vh 0">${closed()?'Змагання завершено, очки не записано.':`Клас «${CL[k][1]}»: ${o.p} з ${MAX(CL[k][0])} очок · ${place} місце`}</p><p class=sub style="margin:0 0 3vh">${left?`У цій грі лишилося ще ${left} нових завдань.`:'Цю гру клас пройшов повністю! Спробуйте інші ігри.'}</p><div class=pills style="justify-content:center"><button class=go onclick="classes()">До таблиці</button><button class=ghost onclick="home()">Грати ще</button></div></div></div>`}
+S.cls='';app.innerHTML=`<div class=stage style="justify-content:center"><div class="card" style="text-align:center"><p class=big style="font-size:11vh">⭐ +${sc}</p><p class=sub style="color:var(--ink);font-size:3.4vh">${kind} Правильних відповідей: ${nr}</p><p class=sub style="margin:1vh 0">${closed()?'Змагання завершено, очки не записано.':`Клас «${CL[k][1]}»: ${o.p} з ${MAXK(k)*(PT+SP)} очок · ${place} місце`}</p><p class=sub style="margin:0 0 3vh">${left?`У цій грі лишилося ще ${left} нових завдань.`:'Цю гру клас пройшов повністю! Спробуйте інші ігри.'}</p><div class=pills style="justify-content:center"><button class=go onclick="classes()">До таблиці</button><button class=ghost onclick="home()">Грати ще</button></div></div></div>`}
 // ---- Дуелі. Гравці (2–4): хто перший правильно — тому очко, у таблицю не йде; лише вже пройдені всіма класами завдання.
 // Клас на клас: подвійні очки (2 × (10 + до 5 за швидкість)) отримує лише клас, який першим відповів правильно; завдання зараховуються всім класам.
 function duel(){CM=S.mode=='c';N=CM?S.cs.length:+(S.mode=='f'?S.np:S.mode)||1;NM=CM?S.cs.map(k=>`«${CL[k][1]}»`):N==1?['Ти']:[...Array(N)].map((_,p)=>`Гравець ${p+1}`);SC=Array(N).fill(0);Q=(CM?fresh(S.cs,S.game):sh(ADM?P[S.game].it.map((_,j)=>j):used(S.game))).slice(0,10);R=0;let n=5;const r=RUN;
@@ -3411,7 +3414,7 @@ const COL=['#ffd9cc','#c8f0e3','#e2d9ff','#fff0a6'];
 const t=()=>{app.innerHTML=`<div class=stage><div class=top><div class="logo s">${N==1?'Приготуйся!':'Станьте біля своїх екранів!'}</div></div><div class=pn style="grid-template-columns:repeat(${N==4?2:N},1fr)">${SC.map((s,p)=>`<div class=pl style="background:${COL[p]};justify-content:center;align-items:center"><div class=pt>${NM[p]}</div><p class=big style="font-size:${CM?11:18}vh">${n>0?n:'Старт!'}</p></div>`).join('')}</div>${CM?RULEC:''}</div>`};
 const run=()=>{t();const cd=setInterval(()=>{if(r!=RUN)return clearInterval(cd);n--;if(n<0){clearInterval(cd);dq()}else t()},1000)};
 if(CM&&!ADM)sesStart(S.cs,Q.length*CX*(PT+SP));
-if(CM&&young()){n=3;return ready(`⚔️ ${NM.join(' проти ')} · ${P[S.game].i} ${P[S.game].n}`,RULEC,run)}run()}
+if(CM&&young()){n=3;return ready(`⚔️ ${NM.join(' проти ')} · ${P[S.game].i} ${gn(S.game)}`,RULEC,run)}run()}
 function dq(){clearInterval(TQ);if(AU)AU.pause();if(R>=Q.length)return fin();sesGo();cur=card(S.game,Q[R]);opts=cur.o||[];LK=Array(N).fill(0);A=Array(N).fill(0);PK=Array(N).fill(-1);B=[...Array(N)].map(nb);done=0;fbT='';if(CM&&!ADM){T0=Date.now();TL=lim()*1000}draw();
 if(CM&&!ADM){tick(()=>{if(done)return;S.cs.forEach((c,q)=>{award(c,S.game,Q[R],0);if(!A[q])sesAns(c,Q[R],'to','',0)});reveal('⏰ Час минув. ')})}}
 const COLD=['#ffd9cc','#c8f0e3','#e2d9ff','#fff0a6'];
