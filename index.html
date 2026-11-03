@@ -164,6 +164,7 @@ img.em{width:1.15em;height:1.15em;vertical-align:-.22em;display:inline-block;obj
 body.v14{background-color:#efeefc;background-image:radial-gradient(circle at 4% 92%,#f7c9bb 0 9vh,transparent 9.2vh),radial-gradient(circle at 97% 4%,#f6d58e 0 7vh,transparent 7.2vh),radial-gradient(circle at 52% 102%,#cfcdee 0 8vh,transparent 8.2vh);background-size:auto;background-repeat:no-repeat}
 .v14 .hero>.card,.v14 .duo>.card,.v14 .setup{box-shadow:none;-webkit-mask:radial-gradient(1vh at 1vh 0,#0000 98%,#000) top/2vh 51% repeat-x,radial-gradient(1vh at 1vh 100%,#0000 98%,#000) bottom/2vh 51% repeat-x;mask:radial-gradient(1vh at 1vh 0,#0000 98%,#000) top/2vh 51% repeat-x,radial-gradient(1vh at 1vh 100%,#0000 98%,#000) bottom/2vh 51% repeat-x;padding-top:2.8vh;padding-bottom:2.8vh}
 .v14 .wod{background:#fde8e0}
+.mon{width:96vw!important;max-height:94vh}.mong{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(30vw,420px),1fr));gap:2vh;overflow:auto}.mdev{border:.3vh solid #ddd;border-radius:1.6vh;padding:1.2vh;display:flex;flex-direction:column;gap:.8vh;background:#fff}.mdev.play{border-color:#2fb36b}.mdev.off{opacity:.55}.mdev.kp{border-color:#e0a800}.mdh{display:flex;align-items:center;gap:1vh}.mdh b{flex:1;font-size:2.2vh}.mdh button{padding:.4vh 1vh;font-size:1.8vh}.mds{font-size:1.9vh}.mdf{overflow:hidden;border-radius:1vh;background:#f3f3f3;position:relative}.mdf iframe{border:0;display:block;background:#fff}.mdi{color:#777;font-size:1.6vh}
 </style></head><body class="v14 v1 v8"><div id="app"></div><button id="lowb" onclick="tl()"></button><button id="fsb" onclick="fsT()"></button>
 <script>
 // ===================== ЗАВДАННЯ =====================
@@ -2038,7 +2039,7 @@ const no=need();
 app.innerHTML=`<div class=home><div class=hero><div class="logo flag">${flagH('Мова вільних і небайдужих 🫶')}</div><div class=slogan>Зробіть свій клас <b>чемпіоном</b> з української! 🏆</div><div class=duo><div class="card rules">${RULES}</div><div class="card wod" id=wod>${wodH()}</div></div><div class=card><div class=cd id=cdn>${cdt()}</div>${tbl(0)}<button class=ghost onclick="classes()">Уся таблиця</button></div></div><div class="card setup">`+
 pills('Як граємо?','mode',[['🏆 За клас','1'],...(pOpen()?[['Двоє','2'],['Троє','3'],['Четверо','4']]:[]),['⚔️ Клас на клас','c']])+body+
 `<div class=gorow><button class=go ${no?'disabled':''} onclick="start()">${no||'Грати'}</button></div></div></div>`+
-(ADM?`<div class=admbar>🛠 Режим учителя · перевірено ${(([d,n])=>`${Math.floor(d/n*1000)/10}% (${d} з ${n})`)(tprog())} · 🆕 — нове чи змінене <button class=ghost onclick="stats()">📊 Статистика</button><button class=ghost onclick="sesl()">Сесії ігор</button><button class=ghost onclick="edl()">Мої правки (${Object.keys(js(EK)).length})</button><button class=ghost onclick="rlAll()">🔄 Оновити всі панелі</button><button class=ghost onclick="ADM=0;home()">Вийти</button></div>`:'')}
+(ADM?`<div class=admbar>🛠 Режим учителя · перевірено ${(([d,n])=>`${Math.floor(d/n*1000)/10}% (${d} з ${n})`)(tprog())} · 🆕 — нове чи змінене <button class=ghost onclick="stats()">📊 Статистика</button><button class=ghost onclick="sesl()">Сесії ігор</button><button class=ghost onclick="edl()">Мої правки (${Object.keys(js(EK)).length})</button><button class=ghost onclick="mon()">🖥 Пристрої</button><button class=ghost onclick="rlAll()">🔄 Оновити всі панелі</button><button class=ghost onclick="ADM=0;home()">Вийти</button></div>`:'')}
 function classes(){stop();SCR='c';app.dataset.s='h';
 app.innerHTML=`<div class=stage><div class=top><div class="logo s">Таблиця класів</div><button class=ghost onclick="home()">Назад</button></div><div class=card style="flex:1;overflow:auto"><div class=cd id=cdn>${cdt()}</div>${tbl(1)}<small class=note>Якщо очок порівну, вище клас, який набрав їх раніше.</small></div>${ADM?'<button class=ghost style="align-self:flex-end" onclick="rst()">🛠 Скинути таблицю</button>':''}</div>`}
 // Скинути таблицю можна лише в режимі вчителя (у таблиці класів і в «Сесіях ігор»)
@@ -2259,8 +2260,50 @@ const RLK='ub5rl';let RLP=0;
 function rlSeen(v){if(!v)return;try{const o=localStorage.getItem(RLK);if(o===null)localStorage.setItem(RLK,String(v));else if(v>+o)RLP=v}catch(x){}}
 function rlAll(){if(!ADM||!confirm('Оновити сторінку гри на всіх панелях? Де зараз грають, оновиться після повернення на головну.'))return;
 rpc('mova_reload',{dev:DEV}).then(()=>alert('Готово! Панелі оновляться протягом хвилини, щойно на них буде відкрита головна сторінка.'),()=>alert('Немає зв\'язку з базою. Спробуйте ще раз.'))}
-setInterval(()=>{if(!RLP||ADM||app.dataset.s!='h'||$('kp')||$('ed')||$('sqd')||Date.now()-last<10000)return;
-try{localStorage.setItem(RLK,String(RLP))}catch(x){}location.replace(location.pathname+'?u='+RLP)},1000);
+// Крім того, кожні 10 хв сторінка оновлюється сама (за тих самих умов), щоб панелі завжди мали свіжу версію гри.
+// Оновлюємо лише тоді, коли сайт відповідає, — щоб без інтернету на екрані не лишилася сторінка з помилкою.
+const LOADT=Date.now();let RLGO=0;
+setInterval(()=>{if(RLGO||!(RLP||Date.now()-LOADT>600000)||ADM||app.dataset.s!='h'||$('kp')||$('ed')||$('sqd')||Date.now()-last<10000)return;
+const u=location.pathname+'?u='+(RLP||Date.now());RLGO=1;fetch(u,{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;
+if(app.dataset.s!='h'||$('kp')||Date.now()-last<10000)return;try{if(RLP)localStorage.setItem(RLK,String(RLP))}catch(x){}location.replace(u)}).catch(()=>{}).finally(()=>{RLGO=0})},1000);
+// ===================== ПРИСТРОЇ: АКТИВНІСТЬ І ЕКРАНИ =====================
+// Кожні 5 с пристрій повідомляє базі (mova_beat), що на ньому відбувається, і надсилає знімок екрана (HTML без скриптів),
+// якщо екран змінився. У режимі вчителя знімок не надсилається. Учитель бачить усе в «🖥 Пристрої».
+const VER=String(cyrb(document.scripts[0].text,3)).slice(0,6);let SNL='',MON=0,MSA=0,MDV={};
+function devInfo(){const g=app.dataset.s!='h',m=S.mode,solo=m=='1',ks=!g?[]:solo&&K!=null?[K]:m=='c'?S.cs.slice():[];
+return{s:ADM?'adm':$('kp')?'kp':g?'g':SCR,m,g:g?S.game:'',ks,np:g&&!solo&&m!='c'?+m:0,q:g&&Q?Math.min(i+1,Q.length):0,n:g&&Q?Q.length:0,
+sc:g?(solo?sc:SC&&SC.slice()):0,idle:Date.now()-last,w:innerWidth,h:innerHeight,ua:navigator.userAgent.slice(0,160),v:VER,qn:qGet().length,net:NET,fs:!!fsEl(),bc:document.body.className}}
+function devSnap(){if(ADM)return'';let h='';for(const e of document.body.children)if(e.tagName!='SCRIPT')h+=e.outerHTML;return h.length>350000?'':h}
+function beat(){if(document.hidden&&!MON)return;let sn=null;try{const h=devSnap();if(h!=SNL){SNL=h;sn=h}}catch(x){}
+rpc('mova_beat',{dev:DEV,info:devInfo(),snap:sn}).catch(()=>{if(sn!==null)SNL=''})}
+setTimeout(beat,1500);setInterval(beat,5000);
+const ago=ms=>{const s=Math.max(0,ms/1000|0);return s<60?s+' с':s<3600?(s/60|0)+' хв':(s/3600|0)+' год '+p2((s%3600)/60|0)+' хв'};
+const uaN=u=>/Windows/.test(u)?'Windows':/Android/.test(u)?'Android':/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Mac/.test(u)?'Mac':/CrOS/.test(u)?'Chromebook':/Linux/.test(u)?'Linux':'Пристрій';
+function devState(d,now){const o=d.info||{};
+if(now-d.seen>20000)return['off','⚪ Не на зв\'язку · '+ago(now-d.seen)+' тому'];
+if(o.s=='adm')return['adm','🛠 Режим учителя'];if(o.s=='kp')return['kp','🔑 Вводять пароль класу'];
+if(o.s=='g'){const who=o.ks&&o.ks.length?o.ks.map(k=>CL[k]?'«'+CL[k][1]+'» '+CL[k][0]+' кл.':'?').join(' ⚔️ '):o.np?o.np+' гравці':'гра';
+return['play',`🟢 Грають: ${who} · ${P[o.g]?P[o.g].i+' '+P[o.g].n:o.g||''}${o.n?` · завдання ${o.q} з ${o.n}`:''}${o.sc?` · очки: ${Array.isArray(o.sc)?o.sc.join(' : '):o.sc}`:''}`]}
+return['idle',(o.idle<60000?'🟡 ':'🔵 ')+(o.s=='c'?'Таблиця класів':'Головна сторінка')+' · востаннє торкалися '+ago(o.idle)+' тому']}
+function mon(){if(!ADM)return;const old=$('ed');if(old)old.remove();const m=document.createElement('div');m.id='ed';m.className='md';
+m.innerHTML=`<div class="card edf mon"><div style="display:flex;align-items:center;gap:2vh;flex-wrap:wrap"><p class=big style="font-size:3.4vh;margin:0">🖥 Пристрої з грою</p><span class=sub id=mons style="font-size:1.9vh"></span><span style="flex:1"></span><button class=go onclick="monX()">Закрити</button></div>
+<p class=sub style="font-size:1.8vh;margin:0">Оновлюється кожні 5 с. Знімок показує, як зараз виглядає екран пристрою. Назву пристрою можна змінити — ✏️.</p><div id=mong class=mong></div></div>`;
+document.body.appendChild(m);MON=1;MSA=0;MDV={};monPull();clearInterval(mon.t);mon.t=setInterval(()=>{if(!$('mong'))return monX();monPull()},5000)}
+function monX(){clearInterval(mon.t);MON=0;const m=$('ed');if(m)m.remove();home()}
+function monPull(){rpc('mova_devs',{since:MSA}).then(r=>{if(!$('mong'))return;for(const d of r.d){const o=MDV[d.dev]||{};if(d.snap!=null){o.snap=d.snap;o.sa=d.sa}Object.assign(o,{dev:d.dev,name:d.name,info:d.info,seen:d.seen});MDV[d.dev]=o;if(d.sa>MSA)MSA=d.sa}monDraw(r.now)},()=>{const e=$('mons');if(e)e.textContent='Немає зв\'язку з базою'})}
+function monDraw(now){const g=$('mong');if(!g)return;const off=d=>now-d.seen>20000,l=Object.values(MDV).sort((a,b)=>off(a)-off(b)||(a.name||'~').localeCompare(b.name||'~')||b.seen-a.seen);
+const on=l.filter(d=>!off(d)),pl=on.filter(d=>d.info&&d.info.s=='g');$('mons').textContent=`На зв'язку: ${on.length} з ${l.length} · грають зараз: ${pl.length}`;
+const head=[...document.head.children].filter(e=>e.tagName!='SCRIPT').map(e=>e.outerHTML).join('');
+l.forEach((d,n)=>{let c=g.querySelector(`[data-dev="${d.dev}"]`);if(!c){c=document.createElement('div');c.dataset.dev=d.dev;c.innerHTML=`<div class=mdh><b class=mdn></b><button class=ghost title="Назва" onclick="monName('${d.dev}')">✏️</button></div><div class=mds></div><div class=mdf><iframe sandbox tabindex=-1></iframe></div><small class=mdi></small>`}
+if(g.children[n]!==c)g.insertBefore(c,g.children[n]||null);
+const o=d.info||{},[st,tx]=devState(d,now),f=c.querySelector('iframe'),w=o.w||1280,h=o.h||720,W=c.querySelector('.mdf').clientWidth||300;
+c.className='mdev '+st;c.querySelector('.mdn').textContent=(d.name||uaN(o.ua||''))+(d.dev==DEV?' (цей пристрій)':'');c.querySelector('.mds').textContent=tx;
+c.querySelector('.mdi').textContent=`№ ${d.dev.slice(-4)} · ${o.w||'?'}×${o.h||'?'}${o.fs?' · на весь екран':''}${o.v&&o.v!=VER?' · ⚠️ стара версія гри':''}${o.qn?` · ще не відправлено: ${o.qn}`:''}${o.net===0?' · ⚠️ немає зв\'язку з базою':''}`;
+const sc=W/w;f.style.cssText=`width:${w}px;height:${h}px;transform:scale(${sc});transform-origin:0 0`;c.querySelector('.mdf').style.height=h*sc+'px';
+const key=String(d.sa||0)+(o.s=='adm'?'a':'');if(f.dataset.k!==key){f.dataset.k=key;
+f.srcdoc=d.snap&&o.s!='adm'?`<!doctype html><html><head><meta charset=utf-8>${head}<style>*{cursor:default!important}html,body{overflow:hidden}</style></head><body class="${o.bc||''}" style="pointer-events:none">${d.snap}</body></html>`
+:`<p style="font:6vh sans-serif;padding:6vh;color:#777">${o.s=='adm'?'У режимі вчителя екран не показується':'Знімка екрана поки немає'}</p>`}})}
+function monName(dev){const d=MDV[dev];const n=prompt('Назва пристрою (наприклад, «Хол, 1 поверх» або «5 клас, ноутбук»):',d&&d.name||'');if(n==null)return;rpc('mova_dev_name',{dev,name:n}).then(()=>{if(d)d.name=n.trim();monPull()},()=>alert('Немає зв\'язку з базою'))}
 // ===================== ПОВНИЙ ЕКРАН =====================
 // Браузер дозволяє повний екран лише після дотику, тож вмикаємо його на першому дотику до гри.
 // Після «Вийти з повноекранного режиму» сам не вмикаємо, доки гра через бездіяльність не повернеться на головну.
