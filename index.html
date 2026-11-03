@@ -114,7 +114,9 @@ button:disabled{cursor:default;opacity:.45}
 .gorow{position:sticky;bottom:0;display:flex;gap:.8vw;align-items:stretch;margin-top:1vh}.gorow .go{flex:1;margin-top:0}
 /* Кнопка «Кнопки нижче» — завжди в самому низу екрана, лише для молодших (див. lowOK) */
 #lowb{position:fixed;left:1.4vw;bottom:1.2vh;z-index:8;font-size:2.4vh;font-weight:700;padding:1vh 1.4vw;border-radius:2vh;background:#fff1a8;color:#2b2840;white-space:nowrap;box-shadow:0 .4vh 1vh rgba(60,50,150,.18);display:none}
-body.lowv #lowb{display:block}body.lowv #app{padding-bottom:7.5vh}
+body.lowv #lowb{display:block}
+/* Повноекранний режим: маленька кнопка у верхньому правому куті */
+#fsb{position:fixed;top:.4vh;right:.6vw;z-index:8;font-size:1.6vh;font-weight:700;padding:.3vh .8vw;border-radius:1.2vh;background:rgba(255,255,255,.85);color:#6b6890;box-shadow:0 .2vh .6vh rgba(60,50,150,.15)}body.lowv #app{padding-bottom:7.5vh}
 .ready{font-size:4.2vh;padding:1.6vh 4vw;margin-top:2vh}
 .ses{width:min(92vw,150vh)}.sest{overflow:auto;max-height:66vh}.sest table{width:100%;border-collapse:collapse;font-size:2vh;color:var(--ink)}
 .sest th{text-align:left;color:var(--mut);position:sticky;top:0;background:#fff}.sest td,.sest th{padding:.7vh .6vw;border-bottom:.2vh solid #e4e3fa;vertical-align:top}
@@ -162,7 +164,7 @@ img.em{width:1.15em;height:1.15em;vertical-align:-.22em;display:inline-block;obj
 body.v14{background-color:#efeefc;background-image:radial-gradient(circle at 4% 92%,#f7c9bb 0 9vh,transparent 9.2vh),radial-gradient(circle at 97% 4%,#f6d58e 0 7vh,transparent 7.2vh),radial-gradient(circle at 52% 102%,#cfcdee 0 8vh,transparent 8.2vh);background-size:auto;background-repeat:no-repeat}
 .v14 .hero>.card,.v14 .duo>.card,.v14 .setup{box-shadow:none;-webkit-mask:radial-gradient(1vh at 1vh 0,#0000 98%,#000) top/2vh 51% repeat-x,radial-gradient(1vh at 1vh 100%,#0000 98%,#000) bottom/2vh 51% repeat-x;mask:radial-gradient(1vh at 1vh 0,#0000 98%,#000) top/2vh 51% repeat-x,radial-gradient(1vh at 1vh 100%,#0000 98%,#000) bottom/2vh 51% repeat-x;padding-top:2.8vh;padding-bottom:2.8vh}
 .v14 .wod{background:#fde8e0}
-</style></head><body class="v14 v1 v8"><div id="app"></div><button id="lowb" onclick="tl()"></button>
+</style></head><body class="v14 v1 v8"><div id="app"></div><button id="lowb" onclick="tl()"></button><button id="fsb" onclick="fsT()"></button>
 <script>
 // ===================== ЗАВДАННЯ =====================
 // Кожна гра (набір) — рівно 25 завдань. Кожен клас має 4 ігри (див. GR), отже максимум — 100 завдань × 10 балів = 1000 балів.
@@ -2210,6 +2212,15 @@ setTimeout(()=>{const n=[...document.querySelectorAll('button[onclick]')].find(x
 const RESET_AT=new Date(2026,10,3,8,0,0).getTime(),RSK='ub5reset';
 function autoReset(){try{if(Date.now()<RESET_AT||localStorage.getItem(RSK)==String(RESET_AT))return;[PK_,SK,SESK,CK_,LKK].forEach(k=>localStorage.removeItem(k));localStorage.setItem(RSK,String(RESET_AT))}catch(x){return}if(app.dataset.s=='h'&&!$('kp')&&!$('ed'))home()}
 autoReset();
-setInterval(()=>{autoReset();const c=$('cdn');if(c)c.textContent=cdt();const w=$('wod');if(w){const h=wodH();if(w.dataset.h!=h){w.dataset.h=h;w.innerHTML=h}}if($('ed'))return;if(Date.now()-last>(ADM?180000:45000)&&(app.dataset.s!='h'||$('kp')||S.low)){S.cls='';S.cs=[];if(S.low)tl();home()}},1000);
+// ===================== ПОВНИЙ ЕКРАН =====================
+// Браузер дозволяє повний екран лише після дотику, тож вмикаємо його на першому дотику до гри.
+// Після «Вийти з повноекранного режиму» сам не вмикаємо, доки гра через бездіяльність не повернеться на головну.
+let FSOFF=0;const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+function fsOn(){const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;if(!f||fsEl())return;try{const p=f.call(d);if(p&&p.catch)p.catch(()=>{})}catch(x){}}
+function fsUp(){$('fsb').textContent=fsEl()?'✕ Вийти з повноекранного режиму':'⛶ На весь екран'}
+function fsT(){if(fsEl()){FSOFF=1;(document.exitFullscreen||document.webkitExitFullscreen).call(document)}else{FSOFF=0;fsOn()}}
+document.addEventListener('pointerdown',e=>{if(!FSOFF&&!e.target.closest('#fsb'))fsOn()},true);
+['fullscreenchange','webkitfullscreenchange'].forEach(t=>document.addEventListener(t,fsUp));fsUp();
+setInterval(()=>{autoReset();const c=$('cdn');if(c)c.textContent=cdt();const w=$('wod');if(w){const h=wodH();if(w.dataset.h!=h){w.dataset.h=h;w.innerHTML=h}}if($('ed'))return;if(Date.now()-last>(ADM?180000:45000)&&(app.dataset.s!='h'||$('kp')||S.low)){S.cls='';S.cs=[];FSOFF=0;if(S.low)tl();home()}},1000);
 home();
 </script></body></html>
