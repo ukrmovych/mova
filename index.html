@@ -1906,29 +1906,29 @@ const ptsOf=k=>{const s=js(SK)[k]||{};let p=0;for(const g of GR[CL[k][0]])for(co
 // «Клас на клас»: подвійні очки (CX), але кожному класу — не більше CDAY ігор на день (ub5c: {клас: {d: дата, n: скільки зіграно}})
 const CX=2,CDAY=2,CK_='ub5c',today=()=>new Date().toDateString();
 const cleft=k=>{const x=js(CK_)[k];return CDAY-(x&&x.d==today()?x.n:0)};
-const cplay=ks=>{const c=js(CK_);for(const k of ks){const x=c[k]&&c[k].d==today()?c[k]:{d:today(),n:0};x.n++;c[k]=x}sj(CK_,c)};
+const cplay=ks=>{const c=js(CK_);for(const k of ks){const x=c[k]&&c[k].d==today()?c[k]:{d:today(),n:0};x.n++;c[k]=x}sj(CK_,c);qAdd({o:'c',ks:ks.slice(),d:iso(),n:1})};
 const gpts=(k,g)=>Object.values(done_(k,g)).reduce((a,b)=>a+b,0);
 const closed=()=>Date.now()>=END;
 // Зараховує відповідь класу k на завдання j гри g (v — бали). Кожне завдання — лише раз.
-function award(k,g,j,v){if(closed()||ADM)return;const s=js(SK),o=s[k]=s[k]||{},a=o[g]=o[g]||{};if(j in a)return;a[j]=v;sj(SK,s);if(v){const p=js(PK_),q=p[k]=p[k]||{p:0,t:0};q.p+=v;q.t=Date.now();sj(PK_,p)}sesAdd(k,g,j,v)}
+function award(k,g,j,v){if(closed()||ADM)return;const s=js(SK),o=s[k]=s[k]||{},a=o[g]=o[g]||{};if(j in a)return;a[j]=v;sj(SK,s);const t=Date.now();if(v){const p=js(PK_),q=p[k]=p[k]||{p:0,t:0};q.p+=v;q.t=t;sj(PK_,p)}qAdd({o:'a',k,g,j,v,sid:SES&&SES.g==g?SES.id:'',t});sesAdd(k,g,j,v)}
 // ---- Сесії ігор (ub5ses) — для вчителя: клас, гра, коли, скільки тривала, очки з можливих.
 // Сесія записується з першої відповіді. r: {клас: {номер завдання: очки}}; x: 1 — скасовано, 2 — скасовано й завдання повернуто.
 const SESK='ub5ses';let SES=null;
 // a: кожна відповідь — {k: клас, j: завдання, t: ok | bad | to (час минув) | late (суперник відповів першим), c: обраний варіант, r: правильний, ms: за скільки відповіли, v: очки, at: коли}
 function sesStart(ks,mx){SES=ADM?null:{id:Date.now().toString(36),at:0,end:0,m:S.mode,g:S.game,ks:ks.slice(),n:Q.length,mx,r:{},a:[],x:0}}
 const sesGo=()=>{if(SES&&!SES.at)SES.at=Date.now()};
-const sesSave=()=>{const o=js(SESK);o[SES.id]=SES;const ids=Object.keys(o);if(ids.length>500)ids.sort((a,b)=>o[a].at-o[b].at).slice(0,ids.length-500).forEach(i=>delete o[i]);sj(SESK,o)};
+const sesSave=()=>{const o=js(SESK);o[SES.id]=SES;const ids=Object.keys(o);if(ids.length>500)ids.sort((a,b)=>o[a].at-o[b].at).slice(0,ids.length-500).forEach(i=>delete o[i]);sj(SESK,o);qAdd({o:'s',id:SES.id,data:SES})};
 function sesAdd(k,g,j,v){if(!SES||SES.g!=g||!SES.ks.includes(k))return;(SES.r[k]=SES.r[k]||{})[j]=v;SES.end=Date.now();sesSave()}
 // Правильна відповідь і обраний варіант поточного завдання (для «Склади слово» — складене слово)
 const corr=()=>cur.w?cur.w.join(''):(opts.find(o=>o[1])||[''])[0],pick=(p,k)=>cur.w?B[p].s.map(x=>cur.L[x]).join(''):opts[k]?opts[k][0]:'';
 function sesAns(k,j,t,c,v){if(!SES||!SES.ks.includes(k))return;SES.a.push({k,j,t,c:String(c||''),r:corr(),ms:t=='to'||t=='late'?0:Date.now()-T0,v:v||0,at:Date.now()});SES.end=Date.now();sesSave()}
 const sum=o=>Object.values(o||{}).reduce((a,b)=>a+b,0),p2d=t=>{const d=new Date(t);return`${p2(d.getDate())}.${p2(d.getMonth()+1)} ${p2(d.getHours())}:${p2(d.getMinutes())}`},dur=ms=>{const s=Math.round(ms/1000);return s<60?s+' с':`${s/60|0} хв ${p2(s%60)} с`};
 function sesl(){const o=js(SESK),l=Object.values(o).sort((a,b)=>b.at-a.at),old=$('ed');if(old)old.remove();const m=document.createElement('div');m.id='ed';m.className='md';
-m.innerHTML=`<div class="card edf ses"><p class=big style="font-size:3.4vh">Сесії ігор на цій панелі: ${l.length}</p><p class=sub style="font-size:2vh">Кожна панель зберігає свої сесії. Тривалість — від першого завдання до останньої відповіді.</p><div class=sest><table><tr><th>Початок</th><th>Кінець</th><th>Клас</th><th>Гра</th><th>Тривала</th><th>Очки</th><th></th></tr>${l.map(s=>`<tr class="${s.x?'sx':''}"><td>${p2d(s.at)}</td><td>${p2d(s.end)}</td><td>${s.ks.map(k=>`${CL[k][1]} <small>${CL[k][0]} кл.</small>`).join(s.m=='c'?' ⚔️ ':'')}</td><td>${P[s.g]?P[s.g].i+' '+P[s.g].n:s.g}<br><small>відповідей: ${Object.keys(s.r[s.ks[0]]||{}).length} з ${s.n}</small></td><td>${dur(s.end-s.at)}</td><td>${s.ks.map(k=>`${s.ks.length>1?CL[k][1]+': ':''}<b>${sum(s.r[k])}</b> з ${s.mx}`).join('<br>')}</td><td>${s.x?(s.x==2?'скасовано, завдання повернуто':'скасовано'):`<button class=ghost onclick="sesc('${s.id}')">Скасувати результати</button>`}</td></tr>`).join('')||'<tr><td colspan=7>Сесій поки немає.</td></tr>'}</table></div><div class=pills style="justify-content:flex-end"><button class=ghost onclick="rst()">Скинути таблицю</button><button class=go onclick="$('ed').remove();home()">Закрити</button></div></div>`;document.body.appendChild(m)}
+m.innerHTML=`<div class="card edf ses"><p class=big style="font-size:3.4vh">Сесії ігор на всіх панелях: ${l.length}</p><p class=sub style="font-size:2vh">Сесії спільні для всіх панелей школи. Тривалість — від першого завдання до останньої відповіді.</p><div class=sest><table><tr><th>Початок</th><th>Кінець</th><th>Клас</th><th>Гра</th><th>Тривала</th><th>Очки</th><th></th></tr>${l.map(s=>`<tr class="${s.x?'sx':''}"><td>${p2d(s.at)}</td><td>${p2d(s.end)}</td><td>${s.ks.map(k=>`${CL[k][1]} <small>${CL[k][0]} кл.</small>`).join(s.m=='c'?' ⚔️ ':'')}</td><td>${P[s.g]?P[s.g].i+' '+P[s.g].n:s.g}<br><small>відповідей: ${Object.keys(s.r[s.ks[0]]||{}).length} з ${s.n}</small></td><td>${dur(s.end-s.at)}</td><td>${s.ks.map(k=>`${s.ks.length>1?CL[k][1]+': ':''}<b>${sum(s.r[k])}</b> з ${s.mx}`).join('<br>')}</td><td>${s.x?(s.x==2?'скасовано, завдання повернуто':'скасовано'):`<button class=ghost onclick="sesc('${s.id}')">Скасувати результати</button>`}</td></tr>`).join('')||'<tr><td colspan=7>Сесій поки немає.</td></tr>'}</table></div><div class=pills style="justify-content:flex-end"><button class=ghost onclick="rst()">Скинути таблицю</button><button class=go onclick="$('ed').remove();home()">Закрити</button></div></div>`;document.body.appendChild(m)}
 function sesc(id){const s=js(SESK)[id];if(!s)return;const m=document.createElement('div');m.id='sqd';m.className='md';
 m.innerHTML=`<div class=card style="max-width:64vw"><p class=big style="font-size:3.4vh">Скасувати результати сесії?</p><p class=sub>${s.ks.map(k=>CL[k][1]).join(', ')} · ${P[s.g]?P[s.g].n:s.g} · ${p2d(s.at)}. Очки за неї зникнуть із таблиці.</p><p class=sub style="color:var(--ink);margin:2vh 0 1vh">Повернути ці завдання класу як непройдені?</p><div class=pills style="justify-content:center"><button class=go onclick="sesx('${id}',2)">Так, повернути</button><button class=ghost onclick="sesx('${id}',1)">Ні, лишити пройденими</button><button class=ghost onclick="$('sqd').remove()">Не скасовувати</button></div></div>`;document.body.appendChild(m)}
-function sesx(id,x){const o=js(SESK),s=o[id],d=js(SK);for(const k in s.r)for(const j in s.r[k]){const a=d[k]&&d[k][s.g];if(a&&j in a){if(x==2)delete a[j];else a[j]=0}}sj(SK,d);s.x=x;sj(SESK,o);
-if(s.m=='c'){const c=js(CK_),day=new Date(s.at).toDateString();for(const k of s.ks)if(c[k]&&c[k].d==day&&c[k].n>0)c[k].n--;sj(CK_,c)}$('sqd').remove();sesl()}
+function sesx(id,x){const o=js(SESK),s=o[id],d=js(SK);for(const k in s.r)for(const j in s.r[k]){qAdd({o:'ax',k:+k,g:s.g,j:+j,x});const a=d[k]&&d[k][s.g];if(a&&j in a){if(x==2)delete a[j];else a[j]=0}}sj(SK,d);s.x=x;sj(SESK,o);qAdd({o:'s',id,data:s});
+if(s.m=='c'){const c=js(CK_),day=new Date(s.at).toDateString();qAdd({o:'c',ks:s.ks.slice(),d:iso(new Date(s.at)),n:-1});for(const k of s.ks)if(c[k]&&c[k].d==day&&c[k].n>0)c[k].n--;sj(CK_,c)}$('sqd').remove();sesl()}
 // ===================== СТАТИСТИКА (режим учителя) =====================
 // Джерело — сесії на цій панелі (скасовані не враховуємо). Сесії до 02.11.2026 не мають подробиць відповідей:
 // для них відомо лише, чи зараховано завдання (t: 'no' — не зараховано: помилка чи час минув).
@@ -2028,7 +2028,7 @@ const flagH=s=>{let n=0;return s.split(' ').map(w=>`<span class=w>${Array.from(w
 // Перевірка вчителем: скільки завдань класу перевірено, і загальний відсоток
 const cdone=g=>P[g].it.filter((_,j)=>isck(g,j)).length,cprog=k=>GR[CL[k][0]].reduce((s,g)=>s+cdone(g),0);
 const tprog=()=>{const d=ALLG.reduce((s,g)=>s+cdone(g),0),n=ALLG.reduce((s,g)=>s+P[g].it.length,0);return[d,n]};
-function home(){stop();if('234'.includes(S.mode)&&!pOpen())S.mode='1';app.dataset.s='h';document.body.style.setProperty('--t',-(Date.now()%1e7)+'ms');upLow();const m=S.mode,gs=games();if(!gs.includes(S.game))S.game='';
+function home(){stop();SCR='h';if('234'.includes(S.mode)&&!pOpen())S.mode='1';app.dataset.s='h';document.body.style.setProperty('--t',-(Date.now()%1e7)+'ms');upLow();const m=S.mode,gs=games();if(!gs.includes(S.game))S.game='';
 const band=`<div class=lab>Вікова група</div><div class=pills>${[1,2,3].map(b=>`<button class="pill${S.band==b?' on':''}" onclick="S.band=${b};home()">${BN[b]}</button>`).join('')}</div>`;
 const cls=multi=>`<div class=tiles>${CL.map((c,k)=>[c,k]).filter(([c])=>bd(c[0])==S.band).map(([c,k])=>{const on=multi?S.cs.includes(k):S.cls===''+k,cp=ADM?cprog(k):0,f=cp/MAXN(CL[k][0]);return`<button class="tile${on?' on':''}" onclick="${multi?`tg(${k})`:`S.cls='${k}';home()`}"${ADM&&!on?` style="background:hsl(135,${30+50*f}%,${96-36*f}%);color:#1d2b1f"`:''}>${c[1]}<small>${ADM?`${cp} з ${MAXN(CL[k][0])} перевірено`:c[0]+' клас'+(multi?(cleft(k)>0?` · ⚔️ ще ${cleft(k)}`:' · ⚔️ завтра'):'')}</small></button>`}).join('')}</div>`;
 const sub=g=>{const n=P[g].it.length;if(ADM){const nn=P[g].it.filter((_,j)=>P[g].nw[j]&&!isck(g,j)).length;return`перевірено ${cdone(g)} з ${n}`+(NEWP.includes(g)?' · 🆕 нова гра':nn?` · 🆕 нових: ${nn}`:'')+(P[g].upd?` · 🆕 ${P[g].upd}`:'')}if(m!='1'&&m!='c')return`завдань: ${used(g).length}`;if(m=='1'){const d=Object.keys(done_(+S.cls,g)).length;return d>=n?`пройдено ✓ · ${gpts(+S.cls,g)} з ${n*PT} оч.`:`${d} з ${n} завдань · ${gpts(+S.cls,g)} з ${n*PT} оч.`}if(m=='c')return`спільних нових: ${fresh(S.cs,g).length}`;return P[g].s};
@@ -2039,10 +2039,10 @@ app.innerHTML=`<div class=home><div class=hero><div class="logo flag">${flagH('�
 pills('Як граємо?','mode',[['🏆 За клас','1'],...(pOpen()?[['Двоє','2'],['Троє','3'],['Четверо','4']]:[]),['⚔️ Клас на клас','c']])+body+
 `<div class=gorow><button class=go ${no?'disabled':''} onclick="start()">${no||'Грати'}</button></div></div></div>`+
 (ADM?`<div class=admbar>🛠 Режим учителя · перевірено ${(([d,n])=>`${Math.floor(d/n*1000)/10}% (${d} з ${n})`)(tprog())} · 🆕 — нове чи змінене <button class=ghost onclick="stats()">📊 Статистика</button><button class=ghost onclick="sesl()">Сесії ігор</button><button class=ghost onclick="edl()">Мої правки (${Object.keys(js(EK)).length})</button><button class=ghost onclick="ADM=0;home()">Вийти</button></div>`:'')}
-function classes(){stop();app.dataset.s='h';
+function classes(){stop();SCR='c';app.dataset.s='h';
 app.innerHTML=`<div class=stage><div class=top><div class="logo s">Таблиця класів</div><button class=ghost onclick="home()">Назад</button></div><div class=card style="flex:1;overflow:auto"><div class=cd id=cdn>${cdt()}</div>${tbl(1)}<small class=note>Якщо очок порівну, вище клас, який набрав їх раніше.</small></div>${ADM?'<button class=ghost style="align-self:flex-end" onclick="rst()">🛠 Скинути таблицю</button>':''}</div>`}
 // Скинути таблицю можна лише в режимі вчителя (у таблиці класів і в «Сесіях ігор»)
-function rst(){if(!ADM)return;if(confirm('Скинути таблицю класів, усі пройдені завдання й сесії на цій панелі?')&&confirm('Точно? Це не можна скасувати.')){try{[PK_,SK,SESK,CK_].forEach(k=>localStorage.removeItem(k))}catch(x){}const m=$('ed');if(m)m.remove();classes()}}
+function rst(){if(!ADM)return;if(confirm('Скинути таблицю класів, усі пройдені завдання й сесії на ВСІХ панелях школи?')&&confirm('Точно? Таблиця очиститься на всіх пристроях.')){qAdd({o:'r'});try{[PK_,SK,SESK,CK_,AWK,DLK].forEach(k=>localStorage.removeItem(k))}catch(x){}rebuild();const m=$('ed');if(m)m.remove();classes()}}
 // ---- Пароль класу: гарна цифрова панель на екрані
 // Секретний вхід учителя: на 🔒 натиснути 4 рази, пауза щонайменше 1 с, ще 3 рази → вхід без пароля в режимі учителя
 // Пароль: 1–4 класи — 3 цифри, 5–11 — 4. Після 5 хибних спроб поспіль клас чекає 30 с (ub5lk: {клас: {n: хибних спроб, u: до коли чекати}}).
@@ -2212,6 +2212,46 @@ setTimeout(()=>{const n=[...document.querySelectorAll('button[onclick]')].find(x
 const RESET_AT=new Date(2026,10,3,8,0,0).getTime(),RSK='ub5reset';
 function autoReset(){return;try{if(Date.now()<RESET_AT||localStorage.getItem(RSK)==String(RESET_AT))return;[PK_,SK,SESK,CK_,LKK].forEach(k=>localStorage.removeItem(k));localStorage.setItem(RSK,String(RESET_AT))}catch(x){return}if(app.dataset.s=='h'&&!$('kp')&&!$('ed'))home()}
 autoReset();
+// ===================== СПІЛЬНІ РЕЗУЛЬТАТИ (усі панелі) =====================
+// Очки, пройдені завдання, сесії й ліміт «Клас на клас» зберігаються в спільній базі (Supabase, функції mova_push/mova_pull).
+// localStorage — лише копія на панелі: кожна зміна спершу пишеться сюди й у чергу ub5q, черга відправляється, коли є зв'язок.
+// Кожне завдання класу зараховується один раз на всю школу: якщо дві панелі зарахували одне завдання, лишається перше.
+const SBU='https://dycbkbpdnuumxophrgzy.supabase.co/rest/v1/rpc/',SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5Y2JrYnBkbnV1bXhvcGhyZ3p5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE2NTQyNzEsImV4cCI6MjEwNzIzMDI3MX0.3SeLoUIr5Utmrv5PJiSgOVDY4gh3Dv8RQ1wPl_jGXFg';
+const QK='ub5q',AWK='ub5aw',DLK='ub5dl',RVK='ub5rv',DVK='ub5dev',MGK='ub5mig',BKK='ub5bak';
+let SCR='h',SY=0,INF=0,NET=0;
+const iso=(d=new Date())=>`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+const qGet=()=>{try{const q=JSON.parse(localStorage.getItem(QK)||'[]');return Array.isArray(q)?q:[]}catch(x){return[]}},qSet=q=>{try{localStorage.setItem(QK,JSON.stringify(q))}catch(x){}};
+const DEV=(()=>{try{let d=localStorage.getItem(DVK);if(!d){d='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);localStorage.setItem(DVK,d)}return d}catch(x){return'p?'}})();
+// Нова сесія замінює ще не відправлену копію тієї самої сесії
+function qAdd(o){const q=qGet();if(o.o=='s'){const i=q.findIndex((x,n)=>n>=INF&&x.o=='s'&&x.id==o.id);if(i>=0){q[i]=o;qSet(q);return syncSoon()}}q.push(o);qSet(q);syncSoon()}
+const rpc=(f,b)=>fetch(SBU+f,{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'},body:JSON.stringify(b),cache:'no-store'}).then(r=>{if(!r.ok)throw r.status;return r.json()});
+// Копія на панелі = спільна база + ще не відправлені зміни цієї панелі
+function rebuild(){const aw=js(AWK),dl=js(DLK),q=qGet(),m={},c={},td=iso();for(const y in aw)m[y]=aw[y].slice();
+for(const k in dl)if(dl[k].d==td)c[k]={d:today(),n:dl[k].n};
+for(const x of q){const y=x.k+'|'+x.g+'|'+x.j;if(x.o=='r'){for(const z in m)delete m[z];for(const z in c)delete c[z]}else if(x.o=='a'){if(!(y in m))m[y]=[x.v,x.t]}else if(x.o=='ax'){if(y in m){if(x.x==2)delete m[y];else m[y][0]=0}}
+else if(x.o=='c'&&x.d==td)for(const k of x.ks){const z=c[k]=c[k]||{d:today(),n:0};z.n=Math.max(0,z.n+x.n)}}
+const s={},p={};for(const y in m){const[k,g,j]=y.split('|'),[v,t]=m[y];const o=s[k]=s[k]||{};(o[g]=o[g]||{})[j]=v;if(v>0){const z=p[k]=p[k]||{p:0,t:0};z.p+=v;if(t>z.t)z.t=t}}
+const b=localStorage.getItem(SK)+localStorage.getItem(CK_);sj(SK,s);sj(PK_,p);sj(CK_,c);return b!=localStorage.getItem(SK)+localStorage.getItem(CK_)}
+function merge(d){const aw=js(AWK);for(const[k,g,j,v,t,del]of d.a||[]){const y=k+'|'+g+'|'+j;if(del)delete aw[y];else aw[y]=[v,t]}sj(AWK,aw);
+const dl=js(DLK);for(const[k,dd,n]of d.c||[])if(!dl[k]||dl[k].d<=dd)dl[k]={d:dd,n};sj(DLK,dl);
+const o=js(SESK),pend=new Set(qGet().filter(x=>x.o=='s').map(x=>x.id));let ch=0;for(const x of d.s||[]){if(pend.has(x.id))continue;ch=1;if(x.del)delete o[x.id];else o[x.id]=x.data}if(ch)sj(SESK,o);
+try{localStorage.setItem(RVK,String(d.rev||0))}catch(x){}return rebuild()}
+let syT=0;function syncSoon(){clearTimeout(syT);syT=setTimeout(sync,400)}
+async function sync(){if(SY)return;SY=1;let ch=0;try{
+for(let q=qGet();q.length;q=qGet()){const n=q[0].o=='dump'?1:Math.min(q.length,100);INF=n;await rpc('mova_push',{dev:DEV,ops:q.slice(0,n)});const r=qGet();r.splice(0,n);INF=0;qSet(r)}
+const d=await rpc('mova_pull',{since:Math.max(0,(+localStorage.getItem(RVK)||0)-300)});ch=merge(d);NET=1}catch(x){NET=0}INF=0;SY=0;
+// Оновлюємо таблицю на екрані, якщо ніхто зараз не грає і не відкрито вікно
+if(ch&&app.dataset.s=='h'&&!$('kp')&&!$('ed')&&!$('sqd')&&Date.now()-last>1500)SCR=='c'?classes():home()}
+// Перший запуск на панелі: повна копія всіх даних гри лишається на панелі (ub5bak) і йде в архів бази (mova_dump),
+// а сесії з 03.11.2026 8:00 (початок змагання) разом з очками переносяться в спільну таблицю.
+(()=>{try{if(localStorage.getItem(MGK))return;const all={};for(let n=0;n<localStorage.length;n++){const y=localStorage.key(n);if(y&&y.startsWith('ub5')&&y!=BKK)all[y]=localStorage.getItem(y)}
+if(!localStorage.getItem(BKK))try{localStorage.setItem(BKK,JSON.stringify({at:Date.now(),data:all}))}catch(x){}
+const q=qGet();q.push({o:'dump',data:{at:Date.now(),ua:navigator.userAgent,data:all}});
+const o=js(SESK),keep={};for(const id in o){const x=o[id],t=x.at||x.end||0;if(t<RESET_AT)continue;keep[id]=x;q.push({o:'s',id,data:x,mig:true});
+if(x.x!=2)for(const k in x.r||{})for(const j in x.r[k])q.push({o:'a',k:+k,g:x.g,j:+j,v:x.x==1?0:x.r[k][j],sid:id,t:x.end||t,mig:true})}
+const c=js(CK_);for(const k in c)if(c[k].d==today()&&c[k].n>0)q.push({o:'c',ks:[+k],d:iso(),n:c[k].n});
+qSet(q);sj(SESK,keep);localStorage.setItem(MGK,String(Date.now()));rebuild()}catch(x){}})();
+sync();setInterval(sync,10000);
 // ===================== ПОВНИЙ ЕКРАН =====================
 // Браузер дозволяє повний екран лише після дотику, тож вмикаємо його на першому дотику до гри.
 // Після «Вийти з повноекранного режиму» сам не вмикаємо, доки гра через бездіяльність не повернеться на головну.
