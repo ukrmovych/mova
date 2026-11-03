@@ -1,0 +1,146 @@
+<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Екран переможців</title>
+<link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@400;700&display=swap&subset=cyrillic" rel="stylesheet">
+<style>
+:root{--o:#f15e38;--od:#c9441d;--ot:#fff1ec;--ink:#111;--y:#ffc93c;--pa:#fffaf6}
+*{box-sizing:border-box}body{margin:0;background:#eee6df;font-family:"Balsamiq Sans",system-ui,sans-serif;color:var(--ink)}
+.wrap{max-width:1640px;margin:0 auto;padding:16px}
+h1.pg{font-size:28px;margin:10px 0 4px}p.pg{margin:0 0 18px;font-size:16px}
+.var{margin:0 0 36px}.var h2{font-size:22px;margin:0 0 4px}.var p{margin:0 0 10px;font-size:15px;max-width:1100px}
+.box{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;border:3px solid #111;border-radius:18px;box-shadow:6px 6px 0 #111}
+.scr{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;overflow:hidden;background:var(--pa)}
+/* shared */
+.title{position:absolute;left:0;right:0;top:40px;text-align:center;font-weight:700;font-size:96px;line-height:1;z-index:5;white-space:nowrap}
+.title span{display:inline-block;color:var(--o);-webkit-text-stroke:5px #111;paint-order:stroke fill;text-shadow:6px 6px 0 #111;animation:wave 1.6s ease-in-out infinite}
+.title span.w{color:#fff}
+@keyframes wave{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-22px) rotate(-6deg)}50%{transform:translateY(0) rotate(4deg)}}
+.conf{position:absolute;top:-30px;width:14px;height:22px;border:2px solid #111;z-index:2;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(980px) rotate(720deg)}}
+.pod{position:absolute;bottom:0;border:5px solid #111;border-bottom:0;border-radius:22px 22px 0 0;box-shadow:10px 0 0 #111;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:18px;z-index:3}
+.pod .n{font-size:110px;font-weight:700;line-height:.9;color:#fff;-webkit-text-stroke:5px #111;paint-order:stroke fill;text-shadow:5px 5px 0 #111}
+.pod .nm{font-size:38px;font-weight:700;margin-top:6px}.pod .pt{font-size:26px;margin-top:2px}
+.p1{left:575px;width:450px;height:340px;background:var(--o)}
+.p2{left:135px;width:420px;height:250px;background:#ffb199}
+.p3{left:1045px;width:420px;height:180px;background:var(--ot)}
+.p3 .n{font-size:84px}
+.emb{position:absolute;z-index:4;width:200px;height:200px;border-radius:50%;background:#fff;border:6px solid #111;box-shadow:7px 7px 0 #111;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.emb b{font-size:96px;line-height:.9;color:var(--o);-webkit-text-stroke:4px #111;paint-order:stroke fill}
+.emb i{font-style:normal;font-size:17px;border:2px dashed #111;border-radius:10px;padding:2px 8px;margin-top:6px;background:var(--ot)}
+.emb.e1{width:250px;height:250px}.emb.e1 b{font-size:120px}
+.pop{animation:pop .7s cubic-bezier(.3,1.8,.5,1) both}
+@keyframes pop{from{transform:scale(0) rotate(-30deg)}}
+.bob{animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-14px) rotate(3deg)}}
+.crown{position:absolute;z-index:6;font-size:90px;line-height:1;animation:crown 1.8s ease-in-out infinite}
+@keyframes crown{50%{transform:translateY(-12px) rotate(-8deg)}}
+.rays{position:absolute;left:50%;top:58%;width:2600px;height:2600px;margin:-1300px 0 0 -1300px;border-radius:50%;background:repeating-conic-gradient(#ffd8cb 0 9deg,var(--pa) 9deg 18deg);animation:spin 40s linear infinite;z-index:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dots{position:absolute;inset:0;background-image:radial-gradient(rgba(17,17,17,.11) 2px,transparent 2.5px);background-size:28px 28px;z-index:0}
+.ribbon{position:absolute;left:50%;top:34px;transform:translateX(-50%);z-index:6;background:var(--o);border:6px solid #111;box-shadow:8px 8px 0 #111;padding:14px 70px 18px;font-size:80px;font-weight:700;color:#fff;-webkit-text-stroke:4px #111;paint-order:stroke fill;white-space:nowrap;animation:drop .9s cubic-bezier(.3,1.6,.5,1) both,tilt 3s 1s ease-in-out infinite}
+.ribbon:before,.ribbon:after{content:"";position:absolute;top:26px;width:90px;height:100%;background:var(--od);border:6px solid #111;z-index:-1}
+.ribbon:before{left:-70px;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,22% 50%)}.ribbon:after{right:-70px;clip-path:polygon(0 0,100% 0,78% 50%,100% 100%,0 100%)}
+@keyframes drop{from{transform:translate(-50%,-300px) rotate(-10deg)}}
+@keyframes tilt{50%{transform:translate(-50%,0) rotate(-1.5deg) scale(1.03)}}
+.bubble{position:absolute;z-index:7;background:#fff;border:5px solid #111;border-radius:24px;box-shadow:6px 6px 0 #111;padding:10px 20px;font-size:30px;font-weight:700;white-space:nowrap}
+.bubble:after{content:"";position:absolute;bottom:-26px;left:40px;border:14px solid transparent;border-top:18px solid #111}
+.boom{position:absolute;z-index:7;width:230px;height:230px;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:700;color:#fff;-webkit-text-stroke:3px #111;paint-order:stroke fill;background:var(--y);clip-path:polygon(50% 0,61% 30%,95% 18%,72% 45%,100% 62%,66% 66%,72% 100%,50% 75%,26% 98%,32% 66%,0 60%,28% 44%,6% 16%,40% 30%);animation:boom 1.2s ease-in-out infinite}
+@keyframes boom{50%{transform:scale(1.12) rotate(6deg)}}
+.stamp{position:absolute;z-index:8;left:50%;top:26px;transform:translateX(-50%) rotate(-4deg);border:8px solid #111;background:#fff;border-radius:18px;padding:6px 40px 12px;font-size:86px;font-weight:700;color:var(--o);-webkit-text-stroke:3px #111;paint-order:stroke fill;box-shadow:10px 10px 0 #111;white-space:nowrap;animation:stamp .5s cubic-bezier(.2,2,.5,1) both}
+@keyframes stamp{from{transform:translateX(-50%) rotate(-4deg) scale(3);opacity:0}}
+.kid{position:absolute;z-index:4}
+.kid svg{width:100%;height:100%;overflow:visible}
+.jump{animation:jump .9s ease-in-out infinite}
+@keyframes jump{0%,100%{transform:translateY(0)}40%{transform:translateY(-34px)}60%{transform:translateY(-34px)}}
+.arm{transform-box:fill-box}
+.wl{transform-origin:100% 0;animation:wl 1s ease-in-out infinite}.wr{transform-origin:0 0;animation:wr 1s ease-in-out infinite}
+@keyframes wl{50%{transform:rotate(-14deg)}}@keyframes wr{50%{transform:rotate(14deg)}}
+.sign{position:absolute;z-index:6;background:#fff;border:5px solid #111;border-radius:14px;box-shadow:6px 6px 0 #111;padding:6px 18px;font-weight:700;font-size:34px;white-space:nowrap;transform:translateX(-50%)}
+.sign.s1{background:var(--y)}
+.cup{position:absolute;z-index:5;animation:cup 1.4s ease-in-out infinite}
+@keyframes cup{50%{transform:translateY(-18px) rotate(-4deg)}}
+.shades{position:absolute;z-index:9;animation:shades 3.5s ease-in infinite}
+@keyframes shades{0%{transform:translateY(-500px)}35%,100%{transform:translateY(0)}}
+.cap{position:absolute;z-index:6;font-size:30px;font-weight:700;background:#111;color:#fff;padding:6px 18px;border-radius:12px;transform:translateX(-50%);white-space:nowrap}
+.note{font-size:14px;color:#555}
+</style></head><body><div class="wrap">
+<h1 class="pg">Екран переможців: 6 варіантів</h1>
+<p class="pg">Варіанти 1–3 з емблемами класів, 4–6 з учнями у шкільній формі. Приклад: 1 місце — Ентузіасти, 2 — Агенти, 3 — Оптимісти. Білі кола з літерою позначають місця, куди стануть справжні емблеми з сайту школи.</p>
+<div id="list"></div></div>
+<script>
+const W=[['Ентузіасти',2840],['Агенти',2615],['Оптимісти',2390]];
+const T='Вітаємо переможців!';
+const title=(cls='')=>`<div class="title ${cls}">`+[...T].map((c,i)=>c==' '?'&nbsp;':`<span class="${i>8?'w':''}" style="animation-delay:${i*.07}s">${c}</span>`).join('')+'</div>';
+function conf(n,cols){let s='';for(let i=0;i<n;i++){const c=cols[i%cols.length];s+=`<div class="conf" style="left:${Math.random()*1600}px;background:${c};animation-duration:${3+Math.random()*4}s;animation-delay:${-Math.random()*7}s;border-radius:${i%3?2:50}px;width:${10+Math.random()*10}px"></div>`}return s}
+const C1=['#f15e38','#111','#fff','#ffc93c','#ffb199'];
+const emb=(k,x,y,cls,d)=>`<div class="emb ${cls} pop" style="left:${x}px;top:${y}px;animation-delay:${d}s"><b>${W[k][0][0]}</b><i>емблема</i></div>`;
+const pods=()=>`<div class="pod p2"><div class="n">2</div><div class="nm">${W[1][0]}</div><div class="pt">${W[1][1]} очок</div></div><div class="pod p1"><div class="n">1</div><div class="nm">${W[0][0]}</div><div class="pt">${W[0][1]} очок</div></div><div class="pod p3"><div class="n">3</div><div class="nm">${W[2][0]}</div><div class="pt">${W[2][1]} очок</div></div>`;
+// cartoon kid in school uniform
+function kid({shirt='#e52a2a',skin='#f6c7a3',hair='#7a4a26',style='short',pose='up',glasses=0,mouth='o'}){
+ const sk='stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"';
+ const arm=(side)=>{const L=side<0;let p;
+  if(pose=='up')p=L?'M34 88 L14 46':'M86 88 L106 46';
+  else if(pose=='peace')p=L?'M34 88 L18 120':'M86 88 L104 52';
+  else if(pose=='hold')p=L?'M34 88 L30 50':'M86 88 L90 50';
+  else p=L?'M34 88 L22 128':'M86 88 L98 128';
+  const end=p.split(' ').slice(-2).map(Number);
+  let hand=`<circle cx="${end[0]}" cy="${end[1]}" r="8" fill="${skin}" ${sk}/>`;
+  if(pose=='peace'&&!L)hand+=`<path d="M${end[0]-3} ${end[1]-6} l-6 -16 M${end[0]+3} ${end[1]-6} l4 -17" ${sk} fill="none"/>`;
+  return `<g class="arm ${pose!='down'&&pose!='hold'?(L?'wl':'wr'):''}"><path d="${p}" stroke="#111" stroke-width="20" stroke-linecap="round" fill="none"/><path d="${p}" stroke="${shirt}" stroke-width="12" stroke-linecap="round" fill="none"/>${hand}</g>`};
+ const hairs={short:`<path d="M30 40 Q28 8 60 8 Q92 8 90 40 Q80 22 60 24 Q42 22 30 40Z" fill="${hair}" ${sk}/>`,
+  pony:`<path d="M28 44 Q26 6 60 8 Q94 6 92 44 Q84 20 60 22 Q38 20 28 44Z" fill="${hair}" ${sk}/><path d="M90 26 Q112 30 104 62 Q98 44 90 40Z" fill="${hair}" ${sk}/>`,
+  bob:`<path d="M26 58 Q20 6 60 8 Q100 6 94 58 L86 58 Q86 26 60 24 Q34 26 34 58Z" fill="${hair}" ${sk}/>`,
+  curly:`<g fill="${hair}" ${sk}><circle cx="36" cy="26" r="12"/><circle cx="52" cy="16" r="13"/><circle cx="70" cy="16" r="13"/><circle cx="86" cy="28" r="12"/></g>`};
+ const m={o:'<path d="M48 54 Q60 70 72 54 Z" fill="#fff" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/>',s:'<path d="M48 56 Q60 66 72 56" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/>'}[mouth];
+ return `<svg viewBox="0 0 120 190">
+ <rect x="40" y="132" width="17" height="44" rx="6" fill="#222" ${sk}/><rect x="63" y="132" width="17" height="44" rx="6" fill="#222" ${sk}/>
+ <ellipse cx="46" cy="178" rx="15" ry="8" fill="#fff" ${sk}/><ellipse cx="74" cy="178" rx="15" ry="8" fill="#fff" ${sk}/>
+ ${arm(-1)}${arm(1)}
+ <path d="M32 84 Q34 74 48 72 L72 72 Q86 74 88 84 L86 140 L34 140 Z" fill="${shirt}" ${sk}/>
+ <g transform="translate(60 104)" fill="#fff"><circle r="10"/><circle cx="-11" cy="-7" r="3.5"/><circle cx="11" cy="-8" r="3"/><circle cx="12" cy="7" r="3.5"/><circle cx="-10" cy="9" r="2.6"/><circle cx="0" cy="-14" r="2.5"/></g>
+ <rect x="52" y="62" width="16" height="14" fill="${skin}" ${sk}/>
+ <circle cx="60" cy="40" r="30" fill="${skin}" ${sk}/>
+ ${hairs[style]}
+ <circle cx="49" cy="40" r="4" fill="#111"/><circle cx="71" cy="40" r="4" fill="#111"/>
+ <circle cx="42" cy="51" r="5" fill="#ff8a8a" opacity=".7"/><circle cx="78" cy="51" r="5" fill="#ff8a8a" opacity=".7"/>
+ ${glasses?`<g fill="none" stroke="#e52a2a" stroke-width="4"><circle cx="49" cy="40" r="9"/><circle cx="71" cy="40" r="9"/><path d="M58 40 h4"/></g>`:''}
+ ${m}</svg>`}
+const R='#e52a2a',B='#1d1d1d',SK=['#f6c7a3','#eab68f','#f9d3b4','#d9a27a'],HR=['#7a4a26','#f2c14e','#2a1a10','#b5651d','#4a2c17'];
+function group(cx,base,n,size,seed,opts={}){let s='';const g=size*0.62;for(let i=0;i<n;i++){const x=cx+(i-(n-1)/2)*g-size*0.32;const q=(seed+i)%5;
+ s+=`<div class="kid ${opts.jump?'jump':''}" style="left:${x}px;top:${base-size}px;width:${size*0.64}px;height:${size}px;animation-delay:${(i*.17+seed*.1)%0.9}s;z-index:${4+(i%2)}">${kid({shirt:(i+seed)%2?B:R,skin:SK[q%4],hair:HR[q],style:['short','pony','bob','curly','pony'][q],pose:opts.pose?opts.pose(i):'up',glasses:opts.gl&&i==1,mouth:i%2?'o':'s'})}</div>`}return s}
+const V=[
+{h:'1. Класичний п’єдестал',p:'Хвиля літер у заголовку, падає конфеті в кольорах гри. Емблеми вистрибують по черзі: третє, друге, перше місце. Над переможцем гойдається корона.',
+ f:()=>`<div class="dots"></div>${conf(70,C1)}${title()}${pods()}
+ ${emb(1,245,355,'bob',1.0)}${emb(0,675,240,'e1 bob',1.6)}${emb(2,1155,425,'bob',.4)}
+ <div class="crown" style="left:752px;top:150px">👑</div>`},
+{h:'2. Сонце і стрічка',p:'Позаду обертаються промені, заголовок падає на святковій стрічці. Під емблемами медалі, а біля переможця вибухають мультяшні «БАМ!».',
+ f:()=>`<div class="rays"></div>${conf(40,C1)}<div class="ribbon">Вітаємо переможців!</div>${pods()}
+ ${emb(1,245,355,'bob',1.0)}${emb(0,675,240,'e1 bob',1.6)}${emb(2,1155,425,'bob',.4)}
+ <div style="position:absolute;left:390px;top:330px;font-size:70px;z-index:6">🥈</div><div style="position:absolute;left:860px;top:205px;font-size:90px;z-index:6">🥇</div><div style="position:absolute;left:1300px;top:400px;font-size:64px;z-index:6">🥉</div>
+ <div class="boom" style="left:380px;top:150px">БАМ!</div><div class="boom" style="left:1010px;top:170px;animation-delay:.6s">ВАУ!</div>`},
+{h:'3. Мемний: печатка і бульбашки',p:'Заголовок падає, як печатка. Емблеми «говорять» коміксними бульбашками, у переможця сповзають темні окуляри в стилі «deal with it».',
+ f:()=>`<div class="dots"></div>${conf(55,C1)}<div class="stamp">ВІТАЄМО ПЕРЕМОЖЦІВ!</div>${pods()}
+ ${emb(1,245,355,'bob',.6)}${emb(0,675,240,'e1 bob',.9)}${emb(2,1155,425,'bob',.3)}
+ <div class="shades" style="left:712px;top:318px;font-size:0"><svg width="176" height="56" viewBox="0 0 176 56"><path d="M0 4h176v10h-10l-4 28q-2 12-14 12h-28q-12 0-16-12l-6-20h-20l-6 20q-4 12-16 12h-28q-12 0-14-12l-4-28H0z" fill="#111"/><path d="M20 18h10v8H20zm10 8h10v8H30zM112 18h10v8h-10zm10 8h10v8h-10z" fill="#fff"/></svg></div>
+ <div class="bubble" style="left:70px;top:205px">Майже! Ще трішки 💪</div>
+ <div class="bubble" style="left:900px;top:160px">Легенди мови 😎</div>
+ <div class="bubble" style="left:1240px;top:300px">Ми теж тут! 🙌</div>`},
+{h:'4. Учні стрибають на п’єдесталі',p:'На кожній сходинці підстрибують мультяшні учні в червоно-чорних кофтах із білим логотипом школи. Над ними таблички з назвами класів.',
+ f:()=>`<div class="dots"></div>${conf(70,C1)}${title()}${pods()}
+ ${group(345,650,3,200,1,{jump:1})}${group(800,560,4,230,0,{jump:1,gl:1})}${group(1255,720,3,180,3,{jump:1})}
+ <div class="sign" style="left:345px;top:375px">${W[1][0]}</div><div class="sign s1" style="left:800px;top:250px">🏆 ${W[0][0]}</div><div class="sign" style="left:1255px;top:460px">${W[2][0]}</div>`},
+{h:'5. Кубок над головами',p:'Переможці разом тримають величезний кубок. Друге й третє місця махають руками й радіють за них, у центрі сонячні промені.',
+ f:()=>`<div class="rays"></div>${conf(40,C1)}<div class="ribbon">Вітаємо переможців!</div>${pods()}
+ ${group(345,650,3,195,2,{pose:i=>i==1?'peace':'up'})}${group(800,560,4,220,0,{pose:()=>'hold'})}${group(1255,720,3,175,4,{pose:i=>i%2?'up':'peace'})}
+ <div class="cup" style="left:705px;top:250px;font-size:150px;line-height:1">🏆</div>
+ <div class="cap" style="left:345px;top:410px">${W[1][0]}</div><div class="cap" style="left:1255px;top:500px">${W[2][0]}</div>`},
+{h:'6. Мемний: фото класу',p:'Учні позують, як на шкільному фото: «peace», руки вгору. На переможців з’їжджають темні окуляри, а поруч бульбашки «GG» і «Мовні боси».',
+ f:()=>`<div class="dots"></div>${conf(55,C1)}<div class="stamp">ВІТАЄМО ПЕРЕМОЖЦІВ!</div>${pods()}
+ ${group(345,650,3,200,1,{pose:i=>i==1?'up':'peace'})}${group(800,560,4,230,2,{pose:i=>i%2?'peace':'up',gl:1})}${group(1255,720,3,180,0,{pose:()=>'peace'})}
+ <div class="shades" style="left:722px;top:368px"><svg width="160" height="50" viewBox="0 0 176 56"><path d="M0 4h176v10h-10l-4 28q-2 12-14 12h-28q-12 0-16-12l-6-20h-20l-6 20q-4 12-16 12h-28q-12 0-14-12l-4-28H0z" fill="#111"/></svg></div>
+ <div class="bubble" style="left:960px;top:200px">Мовні боси 😎</div><div class="bubble" style="left:60px;top:250px">GG! 👏</div><div class="bubble" style="left:1150px;top:330px">Наступного разу — ми!</div>
+ <div class="sign" style="left:345px;top:385px">${W[1][0]}</div><div class="sign s1" style="left:800px;top:250px">${W[0][0]}</div><div class="sign" style="left:1255px;top:470px">${W[2][0]}</div>`}];
+const L=document.getElementById('list');
+L.innerHTML=V.map((v,i)=>`<section class="var" id="v${i+1}"><h2>${v.h}</h2><p>${v.p}</p><div class="box"><div class="scr">${v.f()}</div></div></section>`).join('');
+function fit(){document.querySelectorAll('.box').forEach(b=>b.firstChild.style.transform=`scale(${b.clientWidth/1600})`)}
+addEventListener('resize',fit);fit();
+</script></body></html>
