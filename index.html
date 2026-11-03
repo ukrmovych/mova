@@ -2207,10 +2207,10 @@ add('fxr',`left:${x}px;top:${y}px`,600);const n=big?14:8;for(let k=0;k<n;k++){co
 // Після натискання екран перемальовується — знаходимо ту саму кнопку й даємо їй «желе» (варіанти відповідей не чіпаємо: у них свої анімації)
 document.addEventListener('click',e=>{const b=e.target.closest('button[onclick]');if(!b||b.matches('.opt,.lt,.slot')||b.closest('.kp'))return;const k=b.getAttribute('onclick');
 setTimeout(()=>{const n=[...document.querySelectorAll('button[onclick]')].find(x=>x.getAttribute('onclick')==k);if(n){n.classList.remove('pop');void n.offsetWidth;n.classList.add('pop')}},0)},true);
-// Одноразове автоскидання 03.11.2026 о 8:00: учителі тестували гру — з ранку все починається наново для учнів.
-// Очищаємо таблицю, пройдені завдання, сесії, ліміти «Клас на клас» і паузи пароля. Правки й перевірки вчителя лишаються.
+// Автоскидання 03.11.2026 о 8:00 вимкнено: на пристрої, де стара версія сторінки була відкрита з вечора, воно спрацювало лише після
+// перезавантаження і стерло ранкові результати учнів. Більше нічого автоматично не очищаємо.
 const RESET_AT=new Date(2026,10,3,8,0,0).getTime(),RSK='ub5reset';
-function autoReset(){try{if(Date.now()<RESET_AT||localStorage.getItem(RSK)==String(RESET_AT))return;[PK_,SK,SESK,CK_,LKK].forEach(k=>localStorage.removeItem(k));localStorage.setItem(RSK,String(RESET_AT))}catch(x){return}if(app.dataset.s=='h'&&!$('kp')&&!$('ed'))home()}
+function autoReset(){return;try{if(Date.now()<RESET_AT||localStorage.getItem(RSK)==String(RESET_AT))return;[PK_,SK,SESK,CK_,LKK].forEach(k=>localStorage.removeItem(k));localStorage.setItem(RSK,String(RESET_AT))}catch(x){return}if(app.dataset.s=='h'&&!$('kp')&&!$('ed'))home()}
 autoReset();
 // ===================== ПОВНИЙ ЕКРАН =====================
 // Браузер дозволяє повний екран лише після дотику, тож вмикаємо його на першому дотику до гри.
