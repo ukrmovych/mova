@@ -2260,10 +2260,10 @@ const RLK='ub5rl';let RLP=0;
 function rlSeen(v){if(!v)return;try{const o=localStorage.getItem(RLK);if(o===null)localStorage.setItem(RLK,String(v));else if(v>+o)RLP=v}catch(x){}}
 function rlAll(){if(!ADM||!confirm('Оновити сторінку гри на всіх панелях? Де зараз грають, оновиться після повернення на головну.'))return;
 rpc('mova_reload',{dev:DEV}).then(()=>alert('Готово! Панелі оновляться протягом хвилини, щойно на них буде відкрита головна сторінка.'),()=>alert('Немає зв\'язку з базою. Спробуйте ще раз.'))}
-// Крім того, кожні 10 хв сторінка оновлюється сама (за тих самих умов), щоб панелі завжди мали свіжу версію гри.
+// Крім того, кожні 3 хв сторінка оновлюється сама (за тих самих умов), щоб панелі завжди мали свіжу версію гри.
 // Оновлюємо лише тоді, коли сайт відповідає, — щоб без інтернету на екрані не лишилася сторінка з помилкою.
 const LOADT=Date.now();let RLGO=0;
-setInterval(()=>{if(RLGO||!(RLP||Date.now()-LOADT>600000)||ADM||app.dataset.s!='h'||$('kp')||$('ed')||$('sqd')||Date.now()-last<10000)return;
+setInterval(()=>{if(RLGO||!(RLP||Date.now()-LOADT>180000)||ADM||app.dataset.s!='h'||$('kp')||$('ed')||$('sqd')||Date.now()-last<10000)return;
 const u=location.pathname+'?u='+(RLP||Date.now());RLGO=1;fetch(u,{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;
 if(app.dataset.s!='h'||$('kp')||Date.now()-last<10000)return;try{if(RLP)localStorage.setItem(RLK,String(RLP))}catch(x){}location.replace(u)}).catch(()=>{}).finally(()=>{RLGO=0})},1000);
 // ===================== ПРИСТРОЇ: АКТИВНІСТЬ І ЕКРАНИ =====================
