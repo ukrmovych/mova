@@ -3308,7 +3308,7 @@ const flagH=s=>{let n=0;return s.split(' ').map(w=>`<span class=w>${Array.from(w
 // Перевірка вчителем: скільки завдань класу перевірено, і загальний відсоток
 const cdone=g=>P[g].it.filter((_,j)=>isck(g,j)).length,cprog=k=>GK(k).reduce((s,g)=>s+cdone(g),0);
 const tprog=()=>{const d=ALLG.reduce((s,g)=>s+cdone(g),0),n=ALLG.reduce((s,g)=>s+P[g].it.length,0);return[d,n]};
-function home(){stop();SCR='h';if('234'.includes(S.mode)){S.np=S.mode;S.mode='f'}if(S.mode=='f'&&!pOpen())S.mode='1';app.dataset.s='h';document.body.style.setProperty('--t',-(Date.now()%1e7)+'ms');upLow();const m=S.mode;if(!ADM&&S.game&&P[S.game]&&P[S.game].beta&&m!='f')S.game=P[S.game].beta;const gs=games();if(!gs.includes(S.game))S.game='';
+function home(){if(!ADM&&closed()&&!WINP)return WIN(wV());stop();SCR='h';if('234'.includes(S.mode)){S.np=S.mode;S.mode='f'}if(S.mode=='f'&&!pOpen())S.mode='1';app.dataset.s='h';document.body.style.setProperty('--t',-(Date.now()%1e7)+'ms');upLow();const m=S.mode;if(!ADM&&S.game&&P[S.game]&&P[S.game].beta&&m!='f')S.game=P[S.game].beta;const gs=games();if(!gs.includes(S.game))S.game='';
 const band=`<div class=lab>Вікова група</div><div class=pills>${[1,2,3].map(b=>`<button class="pill${S.band==b?' on':''}" onclick="S.band=${b};home()">${BN[b]}</button>`).join('')}</div>`;
 const cls=multi=>`<div class=tiles>${CL.map((c,k)=>[c,k]).filter(([c])=>bd(c[0])==S.band).map(([c,k])=>{const on=multi?S.cs.includes(k):S.cls===''+k,cp=ADM?cprog(k):0,f=cp/MAXK(k);return`<button class="tile${on?' on':''}" onclick="${multi?`tg(${k})`:`S.cls='${k}';home()`}"${ADM&&!on?` style="background:hsl(135,${30+50*f}%,${96-36*f}%);color:#1d2b1f"`:''}>${c[1]}<small>${ADM?`${cp} з ${MAXK(k)} перевірено`:c[0]+' клас'+(multi?(cleft(k)>0?` · ⚔️ ще ${cleft(k)}`:' · ⚔️ завтра'):'')}</small></button>`}).join('')}</div>`;
 const sub=g=>{const n=P[g].it.length;if(ADM){const nn=P[g].it.filter((_,j)=>P[g].nw[j]&&!isck(g,j)).length;return`перевірено ${cdone(g)} з ${n}`+(NEWP.includes(g)?' · 🆕 нова гра':nn?` · 🆕 нових: ${nn}`:'')+(P[g].upd?` · 🆕 ${P[g].upd}`:'')}if(m!='1'&&m!='c')return`завдань: ${used(g).length}`;if(m=='1'){const k=+S.cls,ns=NSx([k],g),n=P[g].it.length+(ns?P[ns].it.length:0),d=Object.keys(done_(k,g)).length+(ns?Object.keys(done_(k,ns)).length:0),gpts=(k,g)=>gp(k,g)+(ns?gp(k,ns):0);return d>=n?`пройдено ✓ · ${gpts(+S.cls,g)} з ${n*(PT+SP)} оч.`:`${d} з ${n} завдань · ${gpts(+S.cls,g)} з ${n*(PT+SP)} оч.`}if(m=='c')return`спільних нових: ${fr2(S.cs,g).length}`;return P[g].s};
@@ -3647,6 +3647,9 @@ const WV={
 6:()=>`<div class=wn-c>${wFl('Вітаємо переможців!','wn-st')}<span class=newb>✨ Тиждень української мови 2026</span>
 <div class=wn-g6>${wOrd((k,j)=>`<div class="wn-col p${j+1}"><span class="pill${j?'':' on'}">${['🏆 Чемпіони!','⚔️ Було гаряче!','🎈 Ми ще повернемося!'][j]}</span>${wKids(3,j?17:21,j*2,i=>j==2&&i==1?'peace':'up')}<div class=go><span>${j+1}</span><b>${wN(k)}</b><small>${wP(k)} оч.</small></div></div>`).join('')}</div></div>${wCf(50)}`};
 WV[7]=()=>WV[1](1);
+// Після END головна сторінка стає екраном переможців: варіант 1 (емблеми), якщо емблеми є в усієї трійки, інакше 7 (учні у формі)
+const wV=()=>wTop().every(x=>EMB[wN(x[0])])?1:7;
+setInterval(()=>{if(!ADM&&!WINP&&closed()&&SCR=='h'&&app.dataset.s=='h'&&!$('kp')&&!$('ed')&&!$('md')&&Date.now()-last>10000)home()},10000);
 function WIN(v){stop();SCR='w';app.dataset.s='h';document.body.style.setProperty('--t',-(Date.now()%1e7)+'ms');app.innerHTML=`<div class="wn v${v}">${WV[v]()}</div>`}
 if(WINP&&WV[WINP])WIN(WINP);else home();
 </script></body></html>
