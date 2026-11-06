@@ -3725,7 +3725,6 @@ const wV=()=>wTop().every(x=>EMB[wN(x[0])])?1:7;
 setInterval(()=>{if(!ADM&&!WINP&&!FIN&&closed()&&SCR=='h'&&app.dataset.s=='h'&&!$('kp')&&!$('ed')&&!$('md')&&Date.now()-last>10000)home()},10000);
 function WIN(v){stop();SCR='w';app.dataset.s='h';document.body.style.setProperty('--t',-(Date.now()%1e7)+'ms');app.innerHTML=`<div class="wn v${v}">${WV[v]()}</div>`}
 if(WINP&&WV[WINP])WIN(WINP);else home();
-if(SBX){const b=document.createElement('div');b.id='demob';b.innerHTML='🧪 Демо: очки вигадані, у справжню таблицю нічого не йде <button onclick="if(confirm(\'Почати демо заново з новими очками?\')){localStorage.clear();location.reload()}">↺ заново</button>';document.body.appendChild(b)}
 // ---- Останній день: дорога з возиком медалей (8:15 → 19:00), великий таймер з 18:55, відлік останніх 10 с
 // До 18:59 возик проїжджає 55/60 шляху, за останню хвилину — ще 5/60 (щоб рух було видно).
 const RD0=new Date(2026,10,5,8,15,0);let RDE=null;
